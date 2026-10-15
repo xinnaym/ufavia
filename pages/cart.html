@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UFAvia — Корзина</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/cart.css">
+</head>
+
+<body class="page-cart">
+
+  <!-- ══════════════════════════════════
+       HEADER
+  ══════════════════════════════════ -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="logo" href="../index.html" aria-label="UFAvia — главная">
+        <span class="logo-icon" aria-hidden="true">✈</span>
+        <span>UFA<span class="logo-accent">via</span></span>
+      </a>
+
+      <nav class="main-nav" aria-label="Основная навигация">
+        <a href="../index.html">Главная</a>
+        <a href="../search.html">Авиабилеты</a>
+        <a href="../index.html#destinations">Направления</a>
+        <a href="../index.html#about">О компании</a>
+        <a href="../index.html#contacts">Контакты</a>
+      </nav>
+
+      <div class="header-actions">
+        <a class="button button-outline" href="../cart.html">Корзина</a>
+        <a class="button" href="../profile.html">Войти</a>
+      </div>
+    </div>
+  </header>
+
+
+  <!-- ══════════════════════════════════
+       MAIN
+  ══════════════════════════════════ -->
+  <main>
+    <div class="container">
+      <h1 class="page-title anim">Корзина</h1>
+
+      <div class="cart-grid">
+        <!-- ── Left Column ── -->
+        <div class="cart-items" id="cart-list">
+
+          <div class="ticket-card anim d1" data-price="5850">
+            <div class="ticket-info">
+              <div class="ticket-route">Уфа → Москва · Аэрофлот</div>
+              <div class="ticket-details">15 июня 2024 · 08:20 – 09:35 · Место 2В · Эконом</div>
+            </div>
+            <div class="ticket-action">
+              <div class="ticket-price">5 850 ₽</div>
+              <button class="btn-remove">Удалить</button>
+            </div>
+          </div>
+
+          <div class="ticket-card anim d2" data-price="6100">
+            <div class="ticket-info">
+              <div class="ticket-route">Москва → Уфа · S7 Airlines</div>
+              <div class="ticket-details">22 июня 2024 · 18:40 – 19:55 · Место 5A · Эконом</div>
+            </div>
+            <div class="ticket-action">
+              <div class="ticket-price">6 100 ₽</div>
+              <button class="btn-remove">Удалить</button>
+            </div>
+          </div>
+
+          <button class="btn-continue anim d3">← Продолжить поиск</button>
+        </div>
+
+        <!-- ── Right Column ── -->
+        <aside class="cart-summary anim d2">
+          <div class="summary-card">
+            <h2 class="summary-title">Итого</h2>
+
+            <div class="summary-row">
+              <span class="summary-label" id="tickets-label">Билеты (2 шт.):</span>
+              <span class="summary-value" id="tickets-val">11 950 ₽</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">Сервисный сбор:</span>
+              <span class="summary-value" id="fee-val">300 ₽</span>
+            </div>
+
+            <div class="summary-row total">
+              <span class="summary-label">К оплате:</span>
+              <span class="summary-value" id="total-val">12 250 ₽</span>
+            </div>
+
+            <div class="payment-methods">
+              <div class="payment-title">Способ оплаты</div>
+              <label class="radio-label">
+                <input type="radio" name="payment" value="card" checked>
+                <span>Банковская карта</span>
+              </label>
+              <label class="radio-label">
+                <input type="radio" name="payment" value="sbp">
+                <span>СБП</span>
+              </label>
+              <label class="radio-label">
+                <input type="radio" name="payment" value="ewallet">
+                <span>Электронный кошелёк</span>
+              </label>
+            </div>
+
+            <button class="btn-checkout" id="btn-checkout">Оформить заказ</button>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </main>
+
+
+  <!-- ══════════════════════════════════
+       FOOTER
+  ══════════════════════════════════ -->
+  <footer class="site-footer" id="about">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <h2>UFAvia</h2>
+        <p>Сервис поиска и покупки<br>авиабилетов по России и миру.</p>
+      </div>
+
+      <div class="footer-column">
+        <h3>Компания</h3>
+        <a href="../index.html#about">О нас</a>
+        <a href="../index.html#destinations">Направления</a>
+        <a href="../index.html#contacts">Контакты</a>
+      </div>
+
+      <div class="footer-column">
+        <h3>Помощь</h3>
+        <a href="../search.html#rules-title">Правила бронирования</a>
+        <a href="../search.html#rules-title">Возврат средств</a>
+        <a href="../profile.html">Личный кабинет</a>
+      </div>
+
+      <address class="footer-column" id="contacts">
+        <h3>Контакты</h3>
+        <a href="tel:+73470000000">+7 (347) 000-00-00</a>
+        <a href="mailto:info@ufavia.ru">info@ufavia.ru</a>
+        <span>г. Стерлитамак</span>
+      </address>
+    </div>
+
+    <div class="container copyright">© 2026 UFAvia. Все права защищены.</div>
+  </footer>
+
+
+  <!-- ══════════════════════════════════
+       JAVASCRIPT
+  ══════════════════════════════════ -->
+  <script src="../assets/js/cart.js"></script>
+</body>
+</html>

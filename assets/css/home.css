@@ -1,0 +1,537 @@
+:root {
+  --blue: #0867c9;
+  --blue-dark: #0058b5;
+  --orange: #ff6b2c;
+  --ink: #171b22;
+  --muted: #7d858f;
+  --pale: #f4f6f8;
+  --line: #e5e9ee;
+  --footer: #101a2d;
+  --container: 1160px;
+}
+
+.hero {
+  min-height: 456px;
+  color: #fff;
+  background: linear-gradient(115deg, #0873d9 0%, #0056b4 100%);
+}
+
+.hero-inner {
+  padding-top: 68px;
+}
+
+.hero-copy h1 {
+  max-width: 760px;
+  margin: 0 0 20px;
+  font-family: Montserrat, sans-serif;
+  font-size: 38px;
+  font-weight: 700;
+  line-height: 1.18;
+  letter-spacing: -.5px;
+}
+
+.hero-copy p {
+  width: 610px;
+  max-width: 100%;
+  margin: 0 0 42px;
+  color: rgba(255, 255, 255, .88);
+  font-size: 15px;
+}
+
+.flight-search {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr .9fr .9fr auto;
+  align-items: stretch;
+  width: 100%;
+  min-height: 112px;
+  padding: 24px;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 12px 30px rgba(0, 37, 84, .2);
+}
+
+.search-field {
+  min-width: 0;
+  padding: 3px 18px;
+  border-right: 1px solid var(--line);
+}
+
+.search-field label {
+  display: block;
+  margin-bottom: 8px;
+  color: #8b929b;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+}
+
+.search-field input {
+  width: 100%;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  color: #282d33;
+  background: transparent;
+  font-size: 15px;
+  font-weight: 600;
+  outline-offset: 5px;
+}
+
+.search-field input[type="date"] {
+  color-scheme: light;
+  font-size: 13px;
+}
+
+.search-button {
+  align-self: center;
+  height: 54px;
+  margin-left: 24px;
+  padding: 0 32px;
+  border: 0;
+  border-radius: 6px;
+  color: #fff;
+  background: var(--orange);
+  cursor: pointer;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.search-button:hover, .search-button:focus-visible {
+  background: #ed571d;
+}
+
+.form-status {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 8px;
+  margin: 0;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.destinations {
+  min-height: 466px;
+  padding: 62px 0 68px;
+  background: var(--pale);
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 26px;
+}
+
+.section-heading h2 {
+  margin: 0 0 7px;
+  font-family: Montserrat, sans-serif;
+  font-size: 25px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.section-heading p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.outline-link {
+  padding: 12px 24px;
+  border: 1px solid var(--blue);
+  border-radius: 2px;
+  color: var(--blue);
+  background: #fff;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.destination-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.destination-card {
+  height: 244px;
+  overflow: hidden;
+  border: 1px solid #edf0f3;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 2px 5px rgba(20, 35, 50, .03);
+}
+
+.destination-space {
+  height: 169px;
+}
+
+.destination-copy {
+  padding: 0 16px 16px;
+}
+
+.destination-copy h3 {
+  margin: 0 0 4px;
+  font-family: Montserrat, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.destination-copy p {
+  margin: 0;
+  color: #a2a8af;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.destination-copy strong {
+  color: var(--orange);
+  font-size: 13px;
+}
+
+.testimonials {
+  min-height: 455px;
+  padding: 63px 0 70px;
+  background: #fff;
+}
+
+.testimonial-heading {
+  margin-bottom: 33px;
+}
+
+.testimonial-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.testimonial-card {
+  min-height: 186px;
+  padding: 22px 24px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.reviewer {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin-bottom: 19px;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  color: #fff;
+  background: var(--blue);
+  font-family: Montserrat, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.reviewer h3 {
+  margin: 0 0 2px;
+  font-family: Montserrat, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.stars {
+  color: #ff9f29;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+.testimonial-card blockquote {
+  margin: 0;
+  color: #3f454c;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+@media (max-width: 1100px) {
+  .hero {
+    min-height: 384px;
+  }
+
+  .hero-inner {
+    padding-top: 49px;
+  }
+
+  .hero-copy h1 {
+    margin-bottom: 15px;
+    font-size: 29px;
+  }
+
+  .hero-copy p {
+    margin-bottom: 31px;
+    font-size: 12px;
+  }
+
+  .flight-search {
+    min-height: 89px;
+    padding: 17px;
+    border-radius: 13px;
+  }
+
+  .search-field {
+    padding-inline: 13px;
+  }
+
+  .search-field label {
+    margin-bottom: 4px;
+    font-size: 8px;
+  }
+
+  .search-field input {
+    font-size: 12px;
+  }
+
+  .search-field input[type="date"] {
+    font-size: 10px;
+  }
+
+  .search-button {
+    height: 43px;
+    margin-left: 16px;
+    padding-inline: 22px;
+    font-size: 11px;
+  }
+
+  .destinations {
+    padding: 61px 0 58px;
+  }
+
+  .section-heading h2 {
+    font-size: 18px;
+  }
+
+  .section-heading p, .outline-link {
+    font-size: 10px;
+  }
+
+  .destination-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 19px;
+  }
+
+  .destination-card {
+    height: 260px;
+  }
+
+  .destination-space {
+    height: 191px;
+  }
+
+  .destination-copy h3 {
+    font-size: 13px;
+  }
+
+  .destination-copy p, .destination-copy strong {
+    font-size: 9px;
+  }
+
+  .testimonials {
+    min-height: 382px;
+    padding: 60px 0 55px;
+  }
+
+  .testimonial-card {
+    min-height: 174px;
+    padding: 18px;
+  }
+
+  .reviewer {
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+
+  .avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 10px;
+  }
+
+  .reviewer h3 {
+    font-size: 11px;
+  }
+
+  .stars, .testimonial-card blockquote {
+    font-size: 10px;
+  }
+
+}
+
+@media (max-width: 720px) {
+  .hero {
+    min-height: 456px;
+  }
+
+  .hero-inner {
+    padding-top: 29px;
+  }
+
+  .hero-copy h1 {
+    margin-bottom: 10px;
+    font-size: 21px;
+    line-height: 1.25;
+    letter-spacing: -.25px;
+  }
+
+  .desktop-break {
+    display: none;
+  }
+
+  .hero-copy p {
+    margin-bottom: 22px;
+    font-size: 10px;
+    line-height: 1.5;
+  }
+
+  .flight-search {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    padding: 14px;
+    border-radius: 9px;
+  }
+
+  .search-field {
+    height: 49px;
+    padding: 5px 7px;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .search-field label {
+    margin-bottom: 1px;
+    font-size: 7px;
+  }
+
+  .search-field input, .search-field input[type="date"] {
+    height: 24px;
+    font-size: 10px;
+  }
+
+  .search-button {
+    width: 100%;
+    height: 39px;
+    margin: 13px 0 0;
+    padding: 0 12px;
+    border-radius: 4px;
+    font-size: 10px;
+  }
+
+  .form-status {
+    top: calc(100% + 5px);
+    left: 1px;
+    font-size: 9px;
+  }
+
+  .destinations {
+    min-height: 0;
+    padding: 31px 0 37px;
+  }
+
+  .section-heading {
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+
+  .section-heading h2 {
+    margin-bottom: 4px;
+    font-size: 15px;
+  }
+
+  .section-heading p {
+    font-size: 8px;
+  }
+
+  .outline-link {
+    margin-top: 1px;
+    padding: 8px 10px;
+    font-size: 8px;
+    white-space: nowrap;
+  }
+
+  .destination-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .destination-card {
+    height: 185px;
+    border-radius: 5px;
+  }
+
+  .destination-space {
+    height: 131px;
+  }
+
+  .destination-copy {
+    padding: 0 11px 10px;
+  }
+
+  .destination-copy h3 {
+    margin-bottom: 2px;
+    font-size: 11px;
+  }
+
+  .destination-copy p, .destination-copy strong {
+    font-size: 8px;
+  }
+
+  .testimonials {
+    min-height: 0;
+    padding: 33px 0 40px;
+  }
+
+  .testimonial-heading {
+    margin-bottom: 20px;
+  }
+
+  .testimonial-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .testimonial-card {
+    min-height: 121px;
+    padding: 14px;
+    border-radius: 5px;
+  }
+
+  .reviewer {
+    gap: 9px;
+    margin-bottom: 10px;
+  }
+
+  .avatar {
+    width: 29px;
+    height: 29px;
+    font-size: 9px;
+  }
+
+  .reviewer h3 {
+    font-size: 10px;
+  }
+
+  .stars {
+    font-size: 8px;
+  }
+
+  .testimonial-card blockquote {
+    font-size: 9px;
+    line-height: 1.5;
+  }
+
+}
+

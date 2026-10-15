@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UFAvia — Личный кабинет</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/profile.css">
+</head>
+
+<body class="page-profile">
+
+  <!-- ══════════════════════════════════
+       HEADER
+  ══════════════════════════════════ -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="logo" href="../index.html" aria-label="UFAvia — главная">
+        <span class="logo-icon" aria-hidden="true">✈</span>
+        <span>UFA<span class="logo-accent">via</span></span>
+      </a>
+
+      <nav class="main-nav" aria-label="Основная навигация">
+        <a href="../index.html">Главная</a>
+        <a href="../search.html">Авиабилеты</a>
+        <a href="../index.html#destinations">Направления</a>
+        <a href="../index.html#about">О компании</a>
+        <a href="../index.html#contacts">Контакты</a>
+      </nav>
+
+      <div class="header-actions">
+        <a class="button button-outline" href="../cart.html">Корзина</a>
+        <a class="button" href="../index.html">Выйти</a>
+      </div>
+    </div>
+  </header>
+
+
+  <!-- ══════════════════════════════════
+       MAIN
+  ══════════════════════════════════ -->
+  <main>
+    <div class="container">
+      <div class="page-grid">
+
+        <!-- ── Sidebar ── -->
+        <aside class="sidebar anim">
+          <nav class="sidebar-card" aria-label="Навигация по кабинету">
+            <a href="#" class="sidebar-link active">Мои заказы</a>
+            <a href="#" class="sidebar-link">Мои билеты</a>
+            <a href="#" class="sidebar-link">Контакты</a>
+            <a href="#" class="sidebar-link">Настройки профиля</a>
+          </nav>
+        </aside>
+
+        <!-- ── Content ── -->
+        <div class="content">
+
+          <!-- Booking history -->
+          <section class="card anim d1" aria-label="История бронирований">
+            <h2 class="card-title">История бронирований</h2>
+
+            <div class="table-scroll">
+              <table class="bookings-table" aria-label="Список заказов">
+                <thead>
+                  <tr>
+                    <th class="col-order">№ заказа</th>
+                    <th class="col-route">Маршрут</th>
+                    <th class="col-date">Дата</th>
+                    <th class="col-amount">Сумма</th>
+                    <th class="col-status">Статус</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="col-order">#UF-2024-00815</td>
+                    <td class="col-route">Уфа → Москва</td>
+                    <td class="col-date">15.06.2024</td>
+                    <td class="col-amount">6 150 ₽</td>
+                    <td class="col-status">
+                      <span class="badge badge--paid">Оплачен</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="col-order">#UF-2024-00816</td>
+                    <td class="col-route">Москва → Уфа</td>
+                    <td class="col-date">22.06.2024</td>
+                    <td class="col-amount">6 100 ₽</td>
+                    <td class="col-status">
+                      <span class="badge badge--pending">В обработке</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="col-order">#UF-2023-00412</td>
+                    <td class="col-route">Уфа → Сочи</td>
+                    <td class="col-date">10.08.2023</td>
+                    <td class="col-amount">7 300 ₽</td>
+                    <td class="col-status">
+                      <span class="badge badge--cancelled">Отменён</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- Profile settings -->
+          <section class="card anim d2" aria-label="Настройки профиля">
+            <h2 class="card-title">Настройки профиля</h2>
+
+            <form class="form-grid" id="profile-form" novalidate>
+              <div class="form-field">
+                <label for="f-name">Имя</label>
+                <input id="f-name" type="text" value="Иван Иванов" autocomplete="name" />
+              </div>
+
+              <div class="form-field">
+                <label for="f-email">Email</label>
+                <input id="f-email" type="email" value="ivan@example.com" autocomplete="email" />
+              </div>
+
+              <div class="form-field">
+                <label for="f-password">Новый пароль</label>
+                <input id="f-password" type="password" value="········" autocomplete="new-password" />
+              </div>
+
+              <div class="form-field">
+                <label for="f-phone">Телефон</label>
+                <input id="f-phone" type="tel" value="+7 (917) 000-00-00" autocomplete="tel" />
+              </div>
+
+              <!-- Span both columns on desktop -->
+              <div class="form-actions">
+                <button type="submit" class="btn-save" id="btn-save">
+                  Сохранить изменения
+                </button>
+              </div>
+            </form>
+          </section>
+
+        </div><!-- /content -->
+      </div><!-- /page-grid -->
+    </div><!-- /container -->
+  </main>
+
+
+  <!-- ══════════════════════════════════
+       FOOTER
+  ══════════════════════════════════ -->
+  <footer class="site-footer" id="about">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <h2>UFAvia</h2>
+        <p>Сервис поиска и покупки<br>авиабилетов по России и миру.</p>
+      </div>
+
+      <div class="footer-column">
+        <h3>Компания</h3>
+        <a href="../index.html#about">О нас</a>
+        <a href="../index.html#destinations">Направления</a>
+        <a href="../index.html#contacts">Контакты</a>
+      </div>
+
+      <div class="footer-column">
+        <h3>Помощь</h3>
+        <a href="../search.html#rules-title">Правила бронирования</a>
+        <a href="../search.html#rules-title">Возврат средств</a>
+        <a href="../profile.html">Личный кабинет</a>
+      </div>
+
+      <address class="footer-column" id="contacts">
+        <h3>Контакты</h3>
+        <a href="tel:+73470000000">+7 (347) 000-00-00</a>
+        <a href="mailto:info@ufavia.ru">info@ufavia.ru</a>
+        <span>г. Стерлитамак</span>
+      </address>
+    </div>
+
+    <div class="container copyright">© 2026 UFAvia. Все права защищены.</div>
+  </footer>
+
+  <script src="../assets/js/profile.js"></script>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UFAvia — Оформление заказа</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/order.css">
+</head>
+
+<body class="page-order">
+
+  <!-- ══════════════════════════════════
+       HEADER
+  ══════════════════════════════════ -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="logo" href="../index.html" aria-label="UFAvia — главная">
+        <span class="logo-icon" aria-hidden="true">✈</span>
+        <span>UFA<span class="logo-accent">via</span></span>
+      </a>
+
+      <nav class="main-nav" aria-label="Основная навигация">
+        <a href="../index.html">Главная</a>
+        <a href="../search.html">Авиабилеты</a>
+        <a href="../index.html#destinations">Направления</a>
+        <a href="../index.html#about">О компании</a>
+        <a href="../index.html#contacts">Контакты</a>
+      </nav>
+
+      <div class="header-actions">
+        <a class="button button-outline" href="../cart.html">Корзина</a>
+        <a class="button" href="../profile.html">Войти</a>
+      </div>
+    </div>
+  </header>
+
+
+  <!-- ══════════════════════════════════
+       MAIN
+  ══════════════════════════════════ -->
+  <main>
+    <div class="container">
+      <form id="booking-form" novalidate>
+        <div class="page-grid">
+
+          <!-- ── Left Column ── -->
+          <div class="left-col">
+
+            <!-- Passenger Data -->
+            <section class="card anim" aria-label="Данные пассажира">
+              <h2 class="card-title">Данные пассажира</h2>
+              <div class="form-row">
+                <div class="field">
+                  <label for="f-surname">Фамилия</label>
+                  <input id="f-surname" type="text" value="Иванов" autocomplete="family-name" />
+                </div>
+                <div class="field">
+                  <label for="f-name">Имя</label>
+                  <input id="f-name" type="text" value="Иван" autocomplete="given-name" />
+                </div>
+                <div class="field">
+                  <label for="f-dob">Дата рождения</label>
+                  <input id="f-dob" type="date" autocomplete="bday" />
+                </div>
+                <div class="field">
+                  <label for="f-passport">Номер паспорта</label>
+                  <input id="f-passport" type="text" value="1234 567890" inputmode="numeric" />
+                </div>
+              </div>
+            </section>
+
+            <!-- Contact Info -->
+            <section class="card anim d1" aria-label="Контактная информация">
+              <h2 class="card-title">Контактная информация</h2>
+              <div class="form-row">
+                <div class="field">
+                  <label for="f-email">Email</label>
+                  <input id="f-email" type="email" placeholder="you@example.com" autocomplete="email" />
+                </div>
+                <div class="field">
+                  <label for="f-phone">Телефон</label>
+                  <input id="f-phone" type="tel" placeholder="+7 (___) __-__-__" autocomplete="tel" />
+                </div>
+              </div>
+            </section>
+
+            <!-- Extras -->
+            <section class="card anim d2" aria-label="Дополнительные услуги">
+              <h2 class="card-title">Дополнительные услуги</h2>
+              <div class="extras-list">
+                <label class="check-label">
+                  <input type="checkbox" data-extra="1500" />
+                  <span>Трансфер из аэропорта (+1 500 ₽)</span>
+                </label>
+                <label class="check-label">
+                  <input type="checkbox" data-extra="500" />
+                  <span>Страховка (+500 ₽)</span>
+                </label>
+                <label class="check-label">
+                  <input type="checkbox" data-extra="3000" />
+                  <span>Бронирование отеля (+3 000 ₽)</span>
+                </label>
+              </div>
+            </section>
+
+          </div><!-- /left-col -->
+
+          <!-- ── Right Column ── -->
+          <aside class="right-col anim d3">
+            <div class="summary-card">
+              <h2 class="summary-title">Ваш заказ</h2>
+
+              <div class="summary-row">
+                <span class="summary-label">Направление:</span>
+                <span class="summary-value">Уфа → Москва</span>
+              </div>
+              <div class="summary-row">
+                <span class="summary-label">Дата:</span>
+                <span class="summary-value">15.06.2024</span>
+              </div>
+              <div class="summary-row">
+                <span class="summary-label">Пассажиров:</span>
+                <span class="summary-value">1</span>
+              </div>
+
+              <div class="summary-total">
+                <span class="summary-total-label">Итого:</span>
+                <span class="summary-total-value" id="total-price">6 150 ₽</span>
+              </div>
+
+              <button type="submit" class="btn-confirm" id="btn-confirm">Подтвердить заказ</button>
+            </div>
+          </aside>
+
+        </div><!-- /page-grid -->
+      </form>
+    </div><!-- /container -->
+  </main>
+
+
+  <!-- ══════════════════════════════════
+       FOOTER
+  ══════════════════════════════════ -->
+  <footer class="site-footer" id="about">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <h2>UFAvia</h2>
+        <p>Сервис поиска и покупки<br>авиабилетов по России и миру.</p>
+      </div>
+
+      <div class="footer-column">
+        <h3>Компания</h3>
+        <a href="../index.html#about">О нас</a>
+        <a href="../index.html#destinations">Направления</a>
+        <a href="../index.html#contacts">Контакты</a>
+      </div>
+
+      <div class="footer-column">
+        <h3>Помощь</h3>
+        <a href="../search.html#rules-title">Правила бронирования</a>
+        <a href="../search.html#rules-title">Возврат средств</a>
+        <a href="../profile.html">Личный кабинет</a>
+      </div>
+
+      <address class="footer-column" id="contacts">
+        <h3>Контакты</h3>
+        <a href="tel:+73470000000">+7 (347) 000-00-00</a>
+        <a href="mailto:info@ufavia.ru">info@ufavia.ru</a>
+        <span>г. Стерлитамак</span>
+      </address>
+    </div>
+
+    <div class="container copyright">© 2026 UFAvia. Все права защищены.</div>
+  </footer>
+
+
+  <!-- ══════════════════════════════════
+       JAVASCRIPT
+  ══════════════════════════════════ -->
+  <script src="../assets/js/order.js"></script>
+
+</body>
+</html>

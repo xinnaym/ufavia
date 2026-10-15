@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>UFAvia — Уфа → Москва</title>
+
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/search.css">
+</head>
+
+<body class="page-search">
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="logo" href="../index.html" aria-label="UFAvia — главная">
+        <span class="logo-icon" aria-hidden="true">✈</span>
+        <span>UFA<span class="logo-accent">via</span></span>
+      </a>
+
+      <nav class="main-nav" aria-label="Основная навигация">
+        <a href="../index.html">Главная</a>
+        <a class="active" aria-current="page" href="../search.html">Авиабилеты</a>
+        <a href="../index.html#destinations">Направления</a>
+        <a href="../index.html#about">О компании</a>
+        <a href="../index.html#contacts">Контакты</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="button button-outline" id="cart-button" type="button">Корзина</button>
+        <button class="button" id="login-button" type="button">Войти</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="layout">
+    <form class="filters" id="filters" aria-label="Фильтры рейсов">
+      <h2>Фильтры</h2>
+
+      <div class="filter-group" role="group" aria-labelledby="sort-title">
+        <p class="filter-title" id="sort-title">Сортировка</p>
+        <label><input type="radio" name="sort" value="price" checked>По цене</label>
+        <label><input type="radio" name="sort" value="departure">По времени вылета</label>
+        <label><input type="radio" name="sort" value="duration">По продолжительности</label>
+      </div>
+
+      <div class="filter-group" role="group" aria-labelledby="price-title">
+        <p class="filter-title" id="price-title">Цена, ₽</p>
+        <label><input type="checkbox" name="price" value="low">до 5 000</label>
+        <label><input type="checkbox" name="price" value="medium" checked>5 000 – 10 000</label>
+        <label><input type="checkbox" name="price" value="high">от 10 000</label>
+      </div>
+
+      <div class="filter-group" role="group" aria-labelledby="stops-title">
+        <p class="filter-title" id="stops-title">Пересадки</p>
+        <label><input type="radio" name="stops" value="0" checked>Без пересадок</label>
+        <label><input type="radio" name="stops" value="1">1 пересадка</label>
+        <label><input type="radio" name="stops" value="any">Любые</label>
+      </div>
+
+      <div class="filter-group" role="group" aria-labelledby="class-title">
+        <p class="filter-title" id="class-title">Класс обслуживания</p>
+        <label><input type="checkbox" name="class" value="economy" checked>Эконом</label>
+        <label><input type="checkbox" name="class" value="business">Бизнес</label>
+        <label><input type="checkbox" name="class" value="first">Первый</label>
+      </div>
+
+      <button class="button apply" type="submit">Применить</button>
+    </form>
+
+    <section class="results" id="results" aria-labelledby="results-title">
+      <h1 id="results-title">Уфа → Москва</h1>
+      <p class="results-subtitle" id="result-count">
+        Найдено 24 рейса
+      </p>
+
+      <div class="flight-list" id="flight-list" aria-live="polite"></div>
+
+      <section class="rules" aria-labelledby="rules-title">
+        <h2 id="rules-title">Правила бронирования и возврата</h2>
+        <p>
+          Бронирование билета осуществляется после подтверждения оплаты.
+          Возврат средств возможен не позднее чем за 24 часа до вылета
+          с удержанием сервисного сбора.
+        </p>
+      </section>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="about">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <h2>UFAvia</h2>
+        <p>Сервис поиска и покупки<br>авиабилетов по России и миру.</p>
+      </div>
+
+      <div class="footer-column">
+        <h3>Компания</h3>
+        <a href="../index.html#about">О нас</a>
+        <a href="../index.html#destinations">Направления</a>
+        <a href="../index.html#contacts">Контакты</a>
+      </div>
+
+      <div class="footer-column">
+        <h3>Помощь</h3>
+        <a href="../search.html#rules-title">Правила бронирования</a>
+        <a href="../search.html#rules-title">Возврат средств</a>
+        <a href="../profile.html">Личный кабинет</a>
+      </div>
+
+      <address class="footer-column" id="contacts">
+        <h3>Контакты</h3>
+        <a href="tel:+73470000000">+7 (347) 000-00-00</a>
+        <a href="mailto:info@ufavia.ru">info@ufavia.ru</a>
+        <span>г. Стерлитамак</span>
+      </address>
+    </div>
+
+    <div class="container copyright">© 2026 UFAvia. Все права защищены.</div>
+  </footer>
+
+  <dialog id="cart-dialog" aria-labelledby="cart-title">
+    <h2 id="cart-title">Корзина</h2>
+    <div id="cart-content"></div>
+    <button class="button dialog-close" data-close>Закрыть</button>
+  </dialog>
+
+  <dialog id="login-dialog" aria-labelledby="login-title">
+    <h2 id="login-title">Вход в аккаунт</h2>
+    <p>Это демонстрационная версия. Для входа необходимо подключить сервис авторизации.</p>
+    <button class="button dialog-close" data-close>Закрыть</button>
+  </dialog>
+
+  <script src="../assets/js/search.js"></script>
+</body>
+</html>

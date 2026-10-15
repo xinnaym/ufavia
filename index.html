@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="UFAvia — поиск и покупка авиабилетов по России и миру.">
+  <title>UFAvia — авиабилеты по всему миру</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/home.css">
+</head>
+
+<body class="page-home">
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="logo" href="index.html" aria-label="UFAvia — главная">
+        <span class="logo-icon" aria-hidden="true">✈</span>
+        <span>UFA<span class="logo-accent">via</span></span>
+      </a>
+
+      <nav class="main-nav" aria-label="Основная навигация">
+        <a class="active" aria-current="page" href="./">Главная</a>
+        <a href="pages/search.html">Авиабилеты</a>
+        <a href="index.html#destinations">Направления</a>
+        <a href="index.html#about">О компании</a>
+        <a href="index.html#contacts">Контакты</a>
+      </nav>
+
+      <div class="header-actions">
+        <a class="button button-outline" href="pages/cart.html">Корзина</a>
+        <a class="button" href="pages/profile.html">Войти</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="container hero-inner">
+        <div class="hero-copy">
+          <h1 id="hero-title">
+            Найдите дешёвые авиабилеты<br class="desktop-break">
+            по всему миру
+          </h1>
+          <p>
+            Сравнивайте цены на билеты от сотен авиакомпаний и
+            бронируйте без комиссии.
+          </p>
+        </div>
+
+        <form class="flight-search" id="flight-search" novalidate>
+          <div class="search-field">
+            <label for="origin">Откуда</label>
+            <input id="origin" name="origin" type="text" value="Уфа" required>
+          </div>
+
+          <div class="search-field">
+            <label for="destination">Куда</label>
+            <input id="destination" name="destination" type="text" value="Москва" required>
+          </div>
+
+          <div class="search-field date-field">
+            <label for="departure">Туда</label>
+            <input id="departure" name="departure" type="date" required>
+          </div>
+
+          <div class="search-field date-field">
+            <label for="return">Обратно</label>
+            <input id="return" name="return" type="date" required>
+          </div>
+
+          <button class="search-button" type="submit">Найти билеты</button>
+
+          <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+
+    <section class="destinations" id="destinations" aria-labelledby="destinations-title">
+      <div class="container">
+        <div class="section-heading">
+          <div>
+            <h2 id="destinations-title">Популярные направления</h2>
+            <p>Дешёвые билеты из Уфы</p>
+          </div>
+
+          <a class="outline-link" href="pages/search.html">Все направления</a>
+        </div>
+
+        <div class="destination-grid">
+          <article class="destination-card">
+            <div class="destination-space" aria-hidden="true"></div>
+            <div class="destination-copy">
+              <h3>Москва</h3>
+              <p><strong>от 4 500 ₽</strong> <span>в одну сторону</span></p>
+            </div>
+          </article>
+
+          <article class="destination-card">
+            <div class="destination-space" aria-hidden="true"></div>
+            <div class="destination-copy">
+              <h3>Санкт-Петербург</h3>
+              <p><strong>от 5 200 ₽</strong> <span>в одну сторону</span></p>
+            </div>
+          </article>
+
+          <article class="destination-card">
+            <div class="destination-space" aria-hidden="true"></div>
+            <div class="destination-copy">
+              <h3>Сочи</h3>
+              <p><strong>от 6 100 ₽</strong> <span>в одну сторону</span></p>
+            </div>
+          </article>
+
+          <article class="destination-card">
+            <div class="destination-space" aria-hidden="true"></div>
+            <div class="destination-copy">
+              <h3>Казань</h3>
+              <p><strong>от 3 800 ₽</strong> <span>в одну сторону</span></p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="testimonials" aria-labelledby="testimonials-title">
+      <div class="container">
+        <div class="section-heading testimonial-heading">
+          <div>
+            <h2 id="testimonials-title">Отзывы наших пассажиров</h2>
+            <p>Более 50 000 довольных клиентов</p>
+          </div>
+        </div>
+
+        <div class="testimonial-grid">
+          <article class="testimonial-card">
+            <div class="reviewer">
+              <span class="avatar" aria-hidden="true">А</span>
+              <div>
+                <h3>Анна Иванова</h3>
+                <div class="stars" aria-label="5 из 5 звёзд">★★★★★</div>
+              </div>
+            </div>
+            <blockquote>
+              «Удобный сайт, купила билеты за 5 минут. Цены действительно
+              ниже, чем у других сервисов.»
+            </blockquote>
+          </article>
+
+          <article class="testimonial-card">
+            <div class="reviewer">
+              <span class="avatar" aria-hidden="true">Д</span>
+              <div>
+                <h3>Дмитрий Петров</h3>
+                <div class="stars" aria-label="5 из 5 звёзд">★★★★★</div>
+              </div>
+            </div>
+            <blockquote>
+              «Пользуюсь UFAvia уже год. Всегда нахожу выгодные предложения.
+              Рекомендую!»
+            </blockquote>
+          </article>
+
+          <article class="testimonial-card">
+            <div class="reviewer">
+              <span class="avatar" aria-hidden="true">М</span>
+              <div>
+                <h3>Мария Смирнова</h3>
+                <div class="stars" aria-label="4 из 5 звёзд">★★★★☆</div>
+              </div>
+            </div>
+            <blockquote>
+              «Хороший сервис, но иногда не хватает рейсов в небольшие города.
+              В целом довольна.»
+            </blockquote>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="about">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <h2>UFAvia</h2>
+        <p>Сервис поиска и покупки<br>авиабилетов по России и миру.</p>
+      </div>
+
+      <div class="footer-column">
+        <h3>Компания</h3>
+        <a href="index.html#about">О нас</a>
+        <a href="index.html#destinations">Направления</a>
+        <a href="index.html#contacts">Контакты</a>
+      </div>
+
+      <div class="footer-column">
+        <h3>Помощь</h3>
+        <a href="pages/search.html#rules-title">Правила бронирования</a>
+        <a href="pages/search.html#rules-title">Возврат средств</a>
+        <a href="pages/profile.html">Личный кабинет</a>
+      </div>
+
+      <address class="footer-column" id="contacts">
+        <h3>Контакты</h3>
+        <a href="tel:+73470000000">+7 (347) 000-00-00</a>
+        <a href="mailto:info@ufavia.ru">info@ufavia.ru</a>
+        <span>г. Стерлитамак</span>
+      </address>
+    </div>
+
+    <div class="container copyright">© 2026 UFAvia. Все права защищены.</div>
+  </footer>
+
+  <script src="assets/js/home.js"></script>
+</body>
+</html>

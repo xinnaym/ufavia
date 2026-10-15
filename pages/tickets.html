@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UFAvia — Авиабилеты</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/tickets.css">
+</head>
+
+<body class="page-tickets">
+
+  <!-- ══════════════════════════════════════
+       HEADER
+  ══════════════════════════════════════ -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="logo" href="../index.html" aria-label="UFAvia — главная">
+        <span class="logo-icon" aria-hidden="true">✈</span>
+        <span>UFA<span class="logo-accent">via</span></span>
+      </a>
+
+      <nav class="main-nav" aria-label="Основная навигация">
+        <a href="../index.html">Главная</a>
+        <a class="active" aria-current="page" href="../search.html">Авиабилеты</a>
+        <a href="../index.html#destinations">Направления</a>
+        <a href="../index.html#about">О компании</a>
+        <a href="../index.html#contacts">Контакты</a>
+      </nav>
+
+      <div class="header-actions">
+        <a class="button button-outline" href="../cart.html">Корзина</a>
+        <a class="button" href="../profile.html">Войти</a>
+      </div>
+    </div>
+  </header>
+
+
+  <!-- ══════════════════════════════════════
+       MAIN
+  ══════════════════════════════════════ -->
+  <main>
+    <div class="container">
+      <div class="content-grid">
+
+        <!-- ── Left column ── -->
+        <div class="left-col">
+
+          <!-- Flight info -->
+          <section class="card anim" aria-label="Информация о рейсе">
+            <h2 class="card-title">Информация о рейсе</h2>
+            <div class="flight-table" role="list">
+              <div class="flight-row" role="listitem">
+                <span class="flight-label">Авиакомпания:</span>
+                <span class="flight-value">Аэрофлот</span>
+              </div>
+              <div class="flight-row" role="listitem">
+                <span class="flight-label">Маршрут:</span>
+                <span class="flight-value">Уфа → Москва</span>
+              </div>
+              <div class="flight-row" role="listitem">
+                <span class="flight-label">Дата:</span>
+                <span class="flight-value">15 июня 2024</span>
+              </div>
+              <div class="flight-row" role="listitem">
+                <span class="flight-label">Вылет:</span>
+                <span class="flight-value">08:20 (UFA)</span>
+              </div>
+              <div class="flight-row" role="listitem">
+                <span class="flight-label">Прилёт:</span>
+                <span class="flight-value">09:35 (SVO)</span>
+              </div>
+              <div class="flight-row" role="listitem">
+                <span class="flight-label">Длительность:</span>
+                <span class="flight-value">1 ч 15 мин</span>
+              </div>
+              <div class="flight-row" role="listitem">
+                <span class="flight-label">Класс:</span>
+                <span class="flight-value">Эконом</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- Seat selector -->
+          <section class="card anim d1" aria-label="Выбор места в самолёте">
+            <h2 class="card-title">Выбор места в самолёте</h2>
+
+            <div class="seat-map-bg" role="group" aria-label="Схема салона самолёта">
+              <!-- Row 1 -->
+              <div class="seat-row">
+                <button class="seat seat--free"     data-seat="1A" aria-label="Место 1A, свободно">1A</button>
+                <button class="seat seat--free"     data-seat="1B" aria-label="Место 1B, свободно">1B</button>
+                <button class="seat seat--occupied" data-seat="1C" aria-label="Место 1C, занято"   disabled>1C</button>
+                <button class="seat seat--occupied" data-seat="1D" aria-label="Место 1D, занято"   disabled>1D</button>
+                <button class="seat seat--free"     data-seat="1E" aria-label="Место 1E, свободно">1E</button>
+                <button class="seat seat--free"     data-seat="1F" aria-label="Место 1F, свободно">1F</button>
+              </div>
+              <!-- Row 2 -->
+              <div class="seat-row">
+                <button class="seat seat--free"     data-seat="2A" aria-label="Место 2A, свободно">2A</button>
+                <button class="seat seat--selected" data-seat="2B" aria-label="Место 2B, выбрано" aria-pressed="true">2B</button>
+                <button class="seat seat--free"     data-seat="2C" aria-label="Место 2C, свободно">2C</button>
+                <button class="seat seat--free"     data-seat="2D" aria-label="Место 2D, свободно">2D</button>
+                <button class="seat seat--occupied" data-seat="2E" aria-label="Место 2E, занято"   disabled>2E</button>
+                <button class="seat seat--free"     data-seat="2F" aria-label="Место 2F, свободно">2F</button>
+              </div>
+              <!-- Row 3 -->
+              <div class="seat-row">
+                <button class="seat seat--free"     data-seat="3A" aria-label="Место 3A, свободно">3A</button>
+                <button class="seat seat--free"     data-seat="3B" aria-label="Место 3B, свободно">3B</button>
+                <button class="seat seat--free"     data-seat="3C" aria-label="Место 3C, свободно">3C</button>
+                <button class="seat seat--occupied" data-seat="3D" aria-label="Место 3D, занято"   disabled>3D</button>
+                <button class="seat seat--free"     data-seat="3E" aria-label="Место 3E, свободно">3E</button>
+                <button class="seat seat--free"     data-seat="3F" aria-label="Место 3F, свободно">3F</button>
+              </div>
+
+              <!-- Legend -->
+              <div class="legend" aria-label="Условные обозначения">
+                <div class="legend-item">
+                  <div class="legend-dot legend-dot--free"     aria-hidden="true"></div>
+                  Свободно
+                </div>
+                <div class="legend-item">
+                  <div class="legend-dot legend-dot--selected" aria-hidden="true"></div>
+                  Выбрано
+                </div>
+                <div class="legend-item">
+                  <div class="legend-dot legend-dot--occupied" aria-hidden="true"></div>
+                  Занято
+                </div>
+              </div>
+            </div>
+          </section>
+
+        </div><!-- /left-col -->
+
+
+        <!-- ── Right column ── -->
+        <aside class="right-col">
+          <section class="card anim d2" aria-label="Ваш заказ">
+            <h2 class="card-title">Ваш заказ</h2>
+
+            <div class="order-rows">
+              <div class="order-row">
+                <span class="order-label">Билет:</span>
+                <span class="order-value" id="price-ticket">5 400 ₽</span>
+              </div>
+              <div class="order-row">
+                <span class="order-label">Выбор места:</span>
+                <span class="order-value" id="price-seat">300 ₽</span>
+              </div>
+              <div class="order-row">
+                <span class="order-label">Сервисный сбор:</span>
+                <span class="order-value" id="price-service">150 ₽</span>
+              </div>
+            </div>
+
+            <div class="order-total">
+              <span class="order-total-label">Итого:</span>
+              <span class="order-total-value" id="price-total">5 850 ₽</span>
+            </div>
+
+            <button class="btn-buy" id="btn-buy">Купить авиабилет</button>
+          </section>
+        </aside>
+
+      </div><!-- /content-grid -->
+    </div><!-- /container -->
+  </main>
+
+
+  <!-- ══════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════ -->
+  <footer class="site-footer" id="about">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <h2>UFAvia</h2>
+        <p>Сервис поиска и покупки<br>авиабилетов по России и миру.</p>
+      </div>
+
+      <div class="footer-column">
+        <h3>Компания</h3>
+        <a href="../index.html#about">О нас</a>
+        <a href="../index.html#destinations">Направления</a>
+        <a href="../index.html#contacts">Контакты</a>
+      </div>
+
+      <div class="footer-column">
+        <h3>Помощь</h3>
+        <a href="../search.html#rules-title">Правила бронирования</a>
+        <a href="../search.html#rules-title">Возврат средств</a>
+        <a href="../profile.html">Личный кабинет</a>
+      </div>
+
+      <address class="footer-column" id="contacts">
+        <h3>Контакты</h3>
+        <a href="tel:+73470000000">+7 (347) 000-00-00</a>
+        <a href="mailto:info@ufavia.ru">info@ufavia.ru</a>
+        <span>г. Стерлитамак</span>
+      </address>
+    </div>
+
+    <div class="container copyright">© 2026 UFAvia. Все права защищены.</div>
+  </footer>
+
+  <script src="../assets/js/tickets.js"></script>
+</body>
+</html>
