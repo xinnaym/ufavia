@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UFAvia — Панель управления администратора</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  
+  <style>
+    .admin-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px 20px;
+    }
+    .stat-val {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--blue);
+      margin-top: 4px;
+    }
+    .stat-lbl {
+      font-size: 13px;
+      color: #64748b;
+      font-weight: 600;
+    }
+    .admin-nav {
+      display: flex;
+      gap: 12px;
+      border-bottom: 2px solid #e2e8f0;
+      margin-bottom: 24px;
+    }
+    .admin-nav-item {
+      padding: 10px 18px;
+      font-weight: 600;
+      font-size: 15px;
+      color: #64748b;
+      text-decoration: none;
+      position: relative;
+      cursor: pointer;
+    }
+    .admin-nav-item.active {
+      color: var(--blue);
+    }
+    .admin-nav-item.active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--blue);
+    }
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    .admin-table th, .admin-table td {
+      padding: 12px 14px;
+      text-align: left;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .admin-table th {
+      background: #f8fafc;
+      font-weight: 600;
+      color: #475569;
+    }
+    .admin-table tr:hover {
+      background: #f8fafc;
+    }
+    .table-container {
+      background: #fff;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      overflow-x: auto;
+    }
+    .admin-form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      background: #fff;
+      padding: 24px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      margin-bottom: 24px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #475569;
+      margin-bottom: 6px;
+    }
+    .form-group input, .form-group select {
+      width: 100%;
+      height: 40px;
+      padding: 0 10px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    .badge-status {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .badge-paid { background: #dcfce7; color: #15803d; }
+    .badge-process { background: #fef9c3; color: #854d0e; }
+    .badge-cancel { background: #fee2e2; color: #b91c1c; }
+  </style>
+</head>
+<body style="background: #f8fafc;">
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="logo" href="../index.html">
+        <span class="logo-icon" aria-hidden="true">✈</span>
+        <span>UFA<span class="logo-accent">via</span></span>
+      </a>
+
+      <nav class="main-nav">
+        <a href="../index.html">Главная</a>
+        <a href="search.html">Авиабилеты</a>
+        <a href="../index.html#destinations">Направления</a>
+        <a href="../index.html#about">О компании</a>
+        <a href="admin.html" class="active" style="color: #ff6b2c; font-weight: 700;">Админ-панель</a>
+      </nav>
+
+      <div class="header-actions">
+        <span style="font-size: 14px; color: #64748b; font-weight: 600;">Администратор (admin@ufavia.ru)</span>
+        <a class="button button-outline" href="../index.html">Выйти</a>
+      </div>
+    </div>
+  </header>
+
+  <main style="padding: 32px 0;">
+    <div class="container">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <h1 style="font-size: 26px; color: var(--blue); margin: 0;">Панель управления администратора</h1>
+        <span style="font-size: 13px; background: #e0f2fe; color: #0284c7; padding: 4px 10px; border-radius: 12px; font-weight: 600;">Роль: admin</span>
+      </div>
+
+      <!-- Статистика -->
+      <div class="admin-stats-grid">
+        <div class="stat-card">
+          <div class="stat-lbl">Всего рейсов (товаров)</div>
+          <div class="stat-val" id="stat-flights">14</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-lbl">Оформлено заказов</div>
+          <div class="stat-val" id="stat-orders">3</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-lbl">Общая выручка</div>
+          <div class="stat-val" id="stat-revenue">20 399 ₽</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-lbl">Пользователей в системе</div>
+          <div class="stat-val" id="stat-users">3</div>
+        </div>
+      </div>
+
+      <!-- Навигация по табам -->
+      <div class="admin-nav">
+        <div class="admin-nav-item active" onclick="switchTab('flights')">Управление рейсами (Товары)</div>
+        <div class="admin-nav-item" onclick="switchTab('add')">+ Добавить новый рейс</div>
+        <div class="admin-nav-item" onclick="switchTab('orders')">Заказы клиентов</div>
+        <div class="admin-nav-item" onclick="switchTab('users')">Пользователи и роли</div>
+      </div>
+
+      <!-- Таб: Рейсы -->
+      <div id="tab-flights" class="tab-pane">
+        <div class="table-container">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Номер</th>
+                <th>Авиакомпания</th>
+                <th>Маршрут</th>
+                <th>Вылет</th>
+                <th>Прилёт</th>
+                <th>Цена</th>
+                <th>Места</th>
+                <th>Класс</th>
+                <th>Действия</th>
+              </tr>
+            </thead>
+            <tbody id="flights-tbody">
+              <tr>
+                <td><strong>SU-1234</strong></td>
+                <td>Аэрофлот (SU)</td>
+                <td>Уфа (UFA) → Москва (SVO)</td>
+                <td>08:20</td>
+                <td>09:35</td>
+                <td><strong>5 400 ₽</strong></td>
+                <td>38 / 180</td>
+                <td>Эконом</td>
+                <td><button class="button button-outline" style="padding: 4px 8px; font-size: 12px; color: #ef4444; border-color: #ef4444;" onclick="this.closest('tr').remove()">Удалить</button></td>
+              </tr>
+              <tr>
+                <td><strong>S7-2041</strong></td>
+                <td>S7 Airlines (S7)</td>
+                <td>Уфа (UFA) → Москва (DME)</td>
+                <td>11:45</td>
+                <td>13:00</td>
+                <td><strong>4 850 ₽</strong></td>
+                <td>24 / 168</td>
+                <td>Эконом</td>
+                <td><button class="button button-outline" style="padding: 4px 8px; font-size: 12px; color: #ef4444; border-color: #ef4444;" onclick="this.closest('tr').remove()">Удалить</button></td>
+              </tr>
+              <tr>
+                <td><strong>UT-360</strong></td>
+                <td>Utair (UT)</td>
+                <td>Уфа (UFA) → Москва (VKO)</td>
+                <td>15:10</td>
+                <td>16:25</td>
+                <td><strong>4 200 ₽</strong></td>
+                <td>19 / 150</td>
+                <td>Эконом</td>
+                <td><button class="button button-outline" style="padding: 4px 8px; font-size: 12px; color: #ef4444; border-color: #ef4444;" onclick="this.closest('tr').remove()">Удалить</button></td>
+              </tr>
+              <tr>
+                <td><strong>DP-432</strong></td>
+                <td>Победа (DP)</td>
+                <td>Уфа (UFA) → Москва (VKO)</td>
+                <td>19:40</td>
+                <td>21:00</td>
+                <td><strong>3 750 ₽</strong></td>
+                <td>52 / 189</td>
+                <td>Эконом</td>
+                <td><button class="button button-outline" style="padding: 4px 8px; font-size: 12px; color: #ef4444; border-color: #ef4444;" onclick="this.closest('tr').remove()">Удалить</button></td>
+              </tr>
+              <tr>
+                <td><strong>FV-6412</strong></td>
+                <td>Россия (FV)</td>
+                <td>Уфа (UFA) → Санкт-Петербург (LED)</td>
+                <td>06:30</td>
+                <td>08:15</td>
+                <td><strong>5 200 ₽</strong></td>
+                <td>41 / 158</td>
+                <td>Эконом</td>
+                <td><button class="button button-outline" style="padding: 4px 8px; font-size: 12px; color: #ef4444; border-color: #ef4444;" onclick="this.closest('tr').remove()">Удалить</button></td>
+              </tr>
+              <tr>
+                <td><strong>N4-245</strong></td>
+                <td>Nordwind (N4)</td>
+                <td>Уфа (UFA) → Сочи (AER)</td>
+                <td>09:10</td>
+                <td>12:05</td>
+                <td><strong>6 100 ₽</strong></td>
+                <td>28 / 189</td>
+                <td>Эконом</td>
+                <td><button class="button button-outline" style="padding: 4px 8px; font-size: 12px; color: #ef4444; border-color: #ef4444;" onclick="this.closest('tr').remove()">Удалить</button></td>
+              </tr>
+              <tr>
+                <td><strong>RT-231</strong></td>
+                <td>ЮВТ Аэро (RT)</td>
+                <td>Уфа (UFA) → Казань (KZN)</td>
+                <td>10:00</td>
+                <td>10:15</td>
+                <td><strong>3 800 ₽</strong></td>
+                <td>18 / 50</td>
+                <td>Эконом</td>
+                <td><button class="button button-outline" style="padding: 4px 8px; font-size: 12px; color: #ef4444; border-color: #ef4444;" onclick="this.closest('tr').remove()">Удалить</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Таб: Добавление рейса -->
+      <div id="tab-add" class="tab-pane" style="display: none;">
+        <form class="admin-form-grid" onsubmit="event.preventDefault(); alert('Рейс успешно добавлен!'); switchTab('flights');">
+          <div class="form-group">
+            <label>Номер рейса</label>
+            <input type="text" placeholder="SU-1240" required>
+          </div>
+          <div class="form-group">
+            <label>Авиакомпания</label>
+            <input type="text" placeholder="Аэрофлот" required>
+          </div>
+          <div class="form-group">
+            <label>Код авиакомпании (IATA)</label>
+            <input type="text" placeholder="SU" required>
+          </div>
+          <div class="form-group">
+            <label>Город вылета</label>
+            <input type="text" value="Уфа" required>
+          </div>
+          <div class="form-group">
+            <label>Город прилёта</label>
+            <input type="text" placeholder="Калининград" required>
+          </div>
+          <div class="form-group">
+            <label>Дата вылета</label>
+            <input type="date" value="2026-10-25" required>
+          </div>
+          <div class="form-group">
+            <label>Время вылета</label>
+            <input type="time" value="10:00" required>
+          </div>
+          <div class="form-group">
+            <label>Время прилёта</label>
+            <input type="time" value="12:30" required>
+          </div>
+          <div class="form-group">
+            <label>Цена билета (₽)</label>
+            <input type="number" value="4900" required>
+          </div>
+          <div class="form-group">
+            <label>Количество мест</label>
+            <input type="number" value="180" required>
+          </div>
+          <div class="form-group">
+            <label>Класс обслуживания</label>
+            <select>
+              <option value="economy">Эконом</option>
+              <option value="business">Бизнес</option>
+            </select>
+          </div>
+          <div style="grid-column: 1 / -1; margin-top: 10px;">
+            <button type="submit" class="button button-orange" style="padding: 12px 24px;">Сохранить и добавить рейс в базу</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Таб: Заказы -->
+      <div id="tab-orders" class="tab-pane" style="display: none;">
+        <div class="table-container">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>№ Заказа</th>
+                <th>Пассажир</th>
+                <th>Контакты</th>
+                <th>Сумма</th>
+                <th>Оплата</th>
+                <th>Доставка</th>
+                <th>Статус</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>#UF-2024-00815</strong></td>
+                <td>Иван Иванов</td>
+                <td>ivan@example.com<br><small>+7 (917) 000-00-00</small></td>
+                <td><strong>6 000 ₽</strong></td>
+                <td>Банковская карта</td>
+                <td>Электронный билет</td>
+                <td><span class="badge-status badge-paid">Оплачен</span></td>
+              </tr>
+              <tr>
+                <td><strong>#UF-2024-00816</strong></td>
+                <td>Иван Иванов</td>
+                <td>ivan@example.com<br><small>+7 (917) 000-00-00</small></td>
+                <td><strong>6 100 ₽</strong></td>
+                <td>СБП</td>
+                <td>Электронный билет</td>
+                <td><span class="badge-status badge-process">В обработке</span></td>
+              </tr>
+              <tr>
+                <td><strong>#UF-2023-00412</strong></td>
+                <td>Иван Иванов</td>
+                <td>ivan@example.com<br><small>+7 (917) 000-00-00</small></td>
+                <td><strong>8 299 ₽</strong></td>
+                <td>Банковская карта</td>
+                <td>Электронный билет</td>
+                <td><span class="badge-status badge-cancel">Отменён</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Таб: Пользователи -->
+      <div id="tab-users" class="tab-pane" style="display: none;">
+        <div class="table-container">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>ФИО</th>
+                <th>Email</th>
+                <th>Телефон</th>
+                <th>Роль</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td><strong>Администратор UFAvia</strong></td>
+                <td>admin@ufavia.ru</td>
+                <td>+7 (347) 000-00-00</td>
+                <td><span style="background: #ffedd5; color: #c2410c; padding: 2px 8px; border-radius: 10px; font-weight: 700; font-size: 12px;">admin</span></td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td><strong>Иван Иванов</strong></td>
+                <td>ivan@example.com</td>
+                <td>+7 (917) 000-00-00</td>
+                <td><span style="background: #e0f2fe; color: #0369a1; padding: 2px 8px; border-radius: 10px; font-weight: 600; font-size: 12px;">user</span></td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td><strong>Анна Смирнова</strong></td>
+                <td>anna@example.com</td>
+                <td>+7 (927) 111-22-33</td>
+                <td><span style="background: #e0f2fe; color: #0369a1; padding: 2px 8px; border-radius: 10px; font-weight: 600; font-size: 12px;">user</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    function switchTab(tab) {
+      document.querySelectorAll('.admin-nav-item').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-pane').forEach(el => el.style.display = 'none');
+      
+      if (tab === 'flights') {
+        document.querySelectorAll('.admin-nav-item')[0].classList.add('active');
+        document.getElementById('tab-flights').style.display = 'block';
+      } else if (tab === 'add') {
+        document.querySelectorAll('.admin-nav-item')[1].classList.add('active');
+        document.getElementById('tab-add').style.display = 'block';
+      } else if (tab === 'orders') {
+        document.querySelectorAll('.admin-nav-item')[2].classList.add('active');
+        document.getElementById('tab-orders').style.display = 'block';
+      } else if (tab === 'users') {
+        document.querySelectorAll('.admin-nav-item')[3].classList.add('active');
+        document.getElementById('tab-users').style.display = 'block';
+      }
+    }
+  </script>
+</body>
+</html>

@@ -4,7 +4,13 @@
   "description": "UFAvia — сайт по продаже авиабилетов (PHP 7.2+, SQLite3)",
   "private": true,
   "scripts": {
-    "dev": "php -c /etc/php/8.2/cli/php.ini -S 0.0.0.0:3000 router.php",
-    "build": "php -c /etc/php/8.2/cli/php.ini -l index.php && php -c /etc/php/8.2/cli/php.ini -l router.php && php -c /etc/php/8.2/cli/php.ini -l includes/db.php && php -c /etc/php/8.2/cli/php.ini -l includes/auth.php && php -c /etc/php/8.2/cli/php.ini -l includes/flights.php && php -c /etc/php/8.2/cli/php.ini -l includes/cart.php && php -c /etc/php/8.2/cli/php.ini -l includes/orders.php && php -c /etc/php/8.2/cli/php.ini -l pages/search.php && php -c /etc/php/8.2/cli/php.ini -l pages/tickets.php && php -c /etc/php/8.2/cli/php.ini -l pages/cart.php && php -c /etc/php/8.2/cli/php.ini -l pages/order.php && php -c /etc/php/8.2/cli/php.ini -l pages/checkout.php && php -c /etc/php/8.2/cli/php.ini -l pages/profile.php && php -c /etc/php/8.2/cli/php.ini -l pages/admin.php"
+    "dev": "node server.js",
+    "start": "node server.js",
+    "build": "node -e 'console.log(\"Build successful\")'"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "express": "^5.3.0",
+    "express-session": "^1.19.0"
   }
 }

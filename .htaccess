@@ -1,0 +1,31 @@
+# UFAvia — Apache конфигурация для OpenServer / хостинга
+AddDefaultCharset UTF-8
+
+DirectoryIndex index.php index.html
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Не перенаправлять существующие реальные файлы и папки
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteCond %{REQUEST_URI} \.(css|js|svg|png|jpg|jpeg|gif|woff|woff2|ttf|ico)$ [NC]
+  RewriteRule ^ - [L]
+
+  # Маршрутизация HTML на PHP страницы
+  RewriteRule ^pages/cart\.html$ pages/cart.php [L,QSA]
+  RewriteRule ^pages/search\.html$ pages/search.php [L,QSA]
+  RewriteRule ^pages/tickets\.html$ pages/tickets.php [L,QSA]
+  RewriteRule ^pages/order\.html$ pages/order.php [L,QSA]
+  RewriteRule ^pages/checkout\.html$ pages/checkout.php [L,QSA]
+  RewriteRule ^pages/profile\.html$ pages/profile.php [L,QSA]
+
+  RewriteRule ^cart(\.html)?$ pages/cart.php [L,QSA]
+  RewriteRule ^search(\.html)?$ pages/search.php [L,QSA]
+  RewriteRule ^tickets(\.html)?$ pages/tickets.php [L,QSA]
+  RewriteRule ^order(\.html)?$ pages/order.php [L,QSA]
+  RewriteRule ^checkout(\.html)?$ pages/checkout.php [L,QSA]
+  RewriteRule ^profile(\.html)?$ pages/profile.php [L,QSA]
+  RewriteRule ^admin(\.html)?$ pages/admin.php [L,QSA]
+</IfModule>
