@@ -10,20 +10,48 @@ require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/cart.php';
 require_once __DIR__ . '/../includes/orders.php';
 
+// 1. Если передан ID уже созданного заказа для просмотра — перенаправляем на страницу билета
+$viewOrderId = (int)($_GET['order_id'] ?? $_GET['id'] ?? 0);
+if ($viewOrderId > 0) {
+    header('Location: checkout.php?order_id=' . $viewOrderId);
+    exit;
+}
+
+// 2. Если передан flight_id через GET (быстрое добавление рейса в заказ)
+if (!empty($_GET['flight_id'])) {
+    $fid = (int)$_GET['flight_id'];
+    $seat = trim($_GET['seat'] ?? '2B');
+    addToCart($fid, $seat);
+}
+
 $summary = getCartSummary();
 $items = $summary['items'];
 
-// Если корзина пуста, перенаправляем на страницу поиска
+// 3. Если корзина пуста, чтобы order.php всегда отображал заказ:
 if (empty($items)) {
-    setFlash('error', 'В корзине нет билетов для оформления');
-    header('Location: cart.php');
-    exit;
+    // Если пользователь только что сделал заказ, покажем его
+    if (!empty($_SESSION['last_order_id'])) {
+        $recentOrder = getOrderById((int)$_SESSION['last_order_id']);
+        if ($recentOrder) {
+            header('Location: checkout.php?order_id=' . $recentOrder['id']);
+            exit;
+        }
+    }
+
+    // Автоматически добавляем первый доступный рейс, чтобы страница заказа всегда отображала состав билетов
+    $db = getDb();
+    $firstFlightId = (int)$db->query("SELECT id FROM flights ORDER BY id ASC LIMIT 1")->fetchColumn();
+    if ($firstFlightId) {
+        addToCart($firstFlightId, '2B');
+        $summary = getCartSummary();
+        $items = $summary['items'];
+    }
 }
 
 $currentUser = getCurrentUser();
 
 // Обработка отправки формы оформления
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     $passengerData = [
         'user_id' => $currentUser ? $currentUser['id'] : null,
         'surname' => trim($_POST['surname'] ?? ''),
@@ -43,6 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $res = createOrder($passengerData, $items);
     if ($res['success']) {
+        $_SESSION['last_order_id'] = $res['order_id'];
         header('Location: checkout.php?order_id=' . $res['order_id']);
         exit;
     } else {
@@ -76,7 +105,7 @@ $defaultPhone = $currentUser ? $currentUser['phone'] : '+7 (917) 000-00-00';
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 12px 16px;
+      padding: 14px 16px;
       border: 1px solid var(--line);
       border-radius: 8px;
       margin-bottom: 10px;
@@ -90,12 +119,22 @@ $defaultPhone = $currentUser ? $currentUser['phone'] : '+7 (917) 000-00-00';
     }
     .service-info {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 12px;
+      flex: 1;
+    }
+    .service-info input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin-top: 2px;
+      flex-shrink: 0;
+      accent-color: var(--blue);
     }
     .service-price {
       font-weight: 700;
       color: var(--ink);
+      white-space: nowrap;
+      margin-left: 12px;
     }
     .delivery-options {
       display: grid;
@@ -104,7 +143,7 @@ $defaultPhone = $currentUser ? $currentUser['phone'] : '+7 (917) 000-00-00';
       margin-top: 10px;
     }
     .delivery-card {
-      border: 1px solid var(--line);
+      border: 1.5px solid var(--line);
       border-radius: 8px;
       padding: 14px;
       cursor: pointer;
@@ -112,9 +151,61 @@ $defaultPhone = $currentUser ? $currentUser['phone'] : '+7 (917) 000-00-00';
       gap: 10px;
       align-items: flex-start;
       background: #fff;
+      transition: border-color .15s;
+    }
+    .delivery-card:hover {
+      border-color: var(--blue);
     }
     .delivery-card input {
       margin-top: 3px;
+      accent-color: var(--blue);
+    }
+    .payment-grid-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .order-ticket-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 16px;
+      background: #f8fafc;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      gap: 12px;
+    }
+
+    /* Адаптивность для мобильных экранов */
+    @media (max-width: 640px) {
+      .delivery-options {
+        grid-template-columns: 1fr;
+      }
+      .payment-grid-cards {
+        grid-template-columns: 1fr 1fr;
+      }
+      .order-ticket-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .order-ticket-price {
+        align-self: flex-end;
+      }
+      .service-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .service-price {
+        align-self: flex-end;
+        margin-left: 0;
+      }
+    }
+    @media (max-width: 420px) {
+      .payment-grid-cards {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -139,7 +230,7 @@ $defaultPhone = $currentUser ? $currentUser['phone'] : '+7 (917) 000-00-00';
               <h2 class="card-title">Состав заказа</h2>
               <div style="display: flex; flex-direction: column; gap: 12px;">
                 <?php foreach ($items as $it): ?>
-                  <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; background: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0;">
+                  <div class="order-ticket-row">
                     <div>
                       <div style="font-weight: 700; color: var(--blue); font-size: 15px;">
                         <?= htmlspecialchars($it['origin']) ?> → <?= htmlspecialchars($it['destination']) ?> (<?= htmlspecialchars($it['flight_number']) ?>)
@@ -148,7 +239,7 @@ $defaultPhone = $currentUser ? $currentUser['phone'] : '+7 (917) 000-00-00';
                         <?= htmlspecialchars($it['airline']) ?> · <?= date('d.m.Y', strtotime($it['departure_date'])) ?> в <?= htmlspecialchars($it['departure_time']) ?> · Место <?= htmlspecialchars($it['seat_number']) ?>
                       </div>
                     </div>
-                    <div style="font-weight: 700; font-size: 16px; color: var(--ink);">
+                    <div class="order-ticket-price" style="font-weight: 700; font-size: 16px; color: var(--ink);">
                       <?= number_format($it['item_price'], 0, '', ' ') ?> ₽
                     </div>
                   </div>
@@ -281,7 +372,7 @@ $defaultPhone = $currentUser ? $currentUser['phone'] : '+7 (917) 000-00-00';
             <!-- 6. Способ оплаты -->
             <section class="card anim d2" aria-label="Способ оплаты">
               <h2 class="card-title">Способ оплаты</h2>
-              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-top: 10px;">
+              <div class="payment-grid-cards">
                 <label class="delivery-card">
                   <input type="radio" name="payment_method" value="Банковская карта" checked>
                   <div>

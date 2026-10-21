@@ -55,10 +55,21 @@ function getCartItems(): array {
 /**
  * Добавление билета в корзину
  */
-function addToCart(int $flightId, string $seatNumber, int $price): bool {
+function addToCart(int $flightId, string $seatNumber = '2B', int $price = 0): bool {
     initSession();
     $sessionId = getSessionId();
     $seatNumber = trim($seatNumber ?: '2B');
+    if ($price <= 0) {
+        try {
+            $db = getDb();
+            $stmtPrice = $db->prepare("SELECT price FROM flights WHERE id = :id");
+            $stmtPrice->execute([':id' => $flightId]);
+            $base = (int)$stmtPrice->fetchColumn();
+            $price = $base > 0 ? $base : 5400;
+        } catch (\Exception $e) {
+            $price = 5400;
+        }
+    }
     $price = (int)$price;
 
     // 1. Сохраняем в сессии

@@ -163,24 +163,98 @@ select:focus-visible, textarea:focus-visible {
 
 /* ---------- Адаптив ---------- */
 @media (max-width: 860px) {
-  .header-inner { flex-wrap: wrap; gap: 8px 12px; padding: 10px 0 0; min-height: 0; }
-  .header-actions { margin-left: auto; }
-  .main-nav {
-    order: 3; width: 100%; margin: 0; gap: 22px;
-    overflow-x: auto; white-space: nowrap;
-    scrollbar-width: none;
+  .header-inner {
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 12px 0 8px;
+    min-height: 0;
   }
-  .main-nav::-webkit-scrollbar { display: none; }
-  .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+  .header-actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .main-nav {
+    order: 3;
+    width: 100%;
+    margin: 0;
+    gap: 10px;
+    padding: 4px 0 8px;
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .main-nav::-webkit-scrollbar {
+    display: none;
+  }
+  .main-nav a {
+    padding: 6px 14px;
+    background: #f1f5f9;
+    border-radius: 20px;
+    font-size: 13px;
+    border-bottom: none;
+    display: inline-block;
+  }
+  .main-nav a:hover {
+    background: #e2e8f0;
+  }
+  .main-nav a.active, .main-nav a[aria-current="page"] {
+    background: var(--blue);
+    color: #fff;
+    border-bottom: none;
+  }
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
 }
+
 @media (max-width: 560px) {
-  .container, .header-inner { width: calc(100% - 32px); }
-  .logo { font-size: 19px; }
-  .logo-icon { width: 32px; height: 32px; font-size: 16px; }
-  .button { min-width: 0; height: 36px; padding: 0 14px; font-size: 13px; }
-  .footer-grid { grid-template-columns: 1fr; gap: 24px; padding-bottom: 28px; }
-  .site-footer { padding-top: 36px; }
+  .container, .header-inner {
+    width: calc(100% - 24px);
+  }
+  .logo {
+    font-size: 18px;
+  }
+  .logo-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+  }
+  .button {
+    min-width: 0;
+    height: 38px;
+    padding: 0 12px;
+    font-size: 13px;
+  }
+  .button-user-name {
+    max-width: 110px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding-bottom: 28px;
+  }
+  .site-footer {
+    padding-top: 36px;
+  }
+  .auth-modal-box {
+    padding: 24px 18px;
+    border-radius: 12px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .auth-modal-box input {
+    font-size: 16px;
+    height: 44px;
+  }
 }
+
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
 /* ---------- Бейдж корзины ---------- */

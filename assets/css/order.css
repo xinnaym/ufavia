@@ -279,51 +279,56 @@ footer {
   .right-col {
     width: 270px;
   }
-
   .card, .summary-card {
-    padding: 26px;
+    padding: 24px;
   }
-
   .card-title, .summary-title {
-    font-size: 23px;
+    font-size: 22px;
   }
-
 }
 
 @media (max-width: 768px) {
   .page-grid {
     flex-direction: column;
+    gap: 20px;
   }
-
   .right-col {
-    width: 100%; position: static;
+    width: 100%;
+    position: static;
   }
-
   main {
-    padding: 28px 0 40px;
+    padding: 24px 0 36px;
   }
-
+  .field input, .field select {
+    min-height: 44px;
+    font-size: 16px;
+  }
 }
 
 @media (max-width: 540px) {
   .card, .summary-card {
-    padding: 20px;
-    border-radius: 10px;
+    padding: 16px;
+    border-radius: 12px;
   }
-
   .card-title, .summary-title {
-    font-size: 20px;
-    margin-bottom: 16px;
-    padding-bottom: 14px;
+    font-size: 19px;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
   }
-
   .form-row {
-    grid-template-columns: 1fr; gap: 14px;
+    grid-template-columns: 1fr;
+    gap: 12px;
   }
-
+  .field input, .field select {
+    min-height: 44px;
+    font-size: 16px;
+    padding: 10px 12px;
+  }
+  .btn-confirm, .btn-buy {
+    min-height: 48px;
+    font-size: 16px;
+  }
   main {
-    padding: 20px 0 32px;
+    padding: 16px 0 28px;
   }
-
 }
-

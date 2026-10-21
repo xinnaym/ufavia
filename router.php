@@ -35,8 +35,17 @@ $htmlToPhpMap = [
     '/tickets' => '/pages/tickets.php',
     '/order' => '/pages/order.php',
     '/checkout' => '/pages/checkout.php',
-    '/profile' => '/pages/profile.php',
     '/admin' => '/pages/admin.php',
+    '/admin.html' => '/pages/admin.php',
+    '/order.php' => '/pages/order.php',
+    '/cart.php' => '/pages/cart.php',
+    '/search.php' => '/pages/search.php',
+    '/tickets.php' => '/pages/tickets.php',
+    '/checkout.php' => '/pages/checkout.php',
+    '/profile.php' => '/pages/profile.php',
+    '/admin.php' => '/pages/admin.php',
+    '/login.php' => '/pages/login.php',
+    '/logout.php' => '/pages/logout.php',
 ];
 
 if (isset($htmlToPhpMap[$uri])) {

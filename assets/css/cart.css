@@ -263,67 +263,67 @@ footer {
   .cart-summary {
     width: 280px;
   }
-
   .ticket-card {
     padding: 20px 24px;
   }
-
   .summary-card {
-    padding: 28px 24px;
+    padding: 24px 20px;
   }
-
 }
 
 @media (max-width: 768px) {
   .cart-grid {
     flex-direction: column;
+    gap: 20px;
   }
-
   .cart-summary {
     width: 100%;
   }
-
   main {
-    padding: 28px 0 40px;
+    padding: 24px 0 36px;
   }
-
   .page-title {
-    font-size: 28px; margin-bottom: 24px;
+    font-size: 26px;
+    margin-bottom: 20px;
   }
-
   .btn-continue {
-    width: 100%; text-align: center; margin-top: 8px;
+    width: 100%;
+    text-align: center;
+    margin-top: 8px;
+    min-height: 44px;
   }
-
+  .btn-checkout {
+    min-height: 48px;
+    font-size: 16px;
+  }
 }
 
 @media (max-width: 540px) {
   .ticket-card {
     flex-direction: column;
     align-items: flex-start;
-    gap: 16px;
-    padding: 20px;
-    border-radius: 8px;
+    gap: 14px;
+    padding: 16px;
+    border-radius: 12px;
   }
-
   .ticket-action {
     width: 100%;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
   }
-
   .summary-card {
-    padding: 24px 20px; border-radius: 8px;
+    padding: 20px 16px;
+    border-radius: 12px;
   }
-
   .page-title {
-    font-size: 26px;
+    font-size: 22px;
   }
-
+  .btn-checkout {
+    min-height: 48px;
+    font-size: 16px;
+  }
   main {
-    padding: 20px 0 32px;
+    padding: 16px 0 28px;
   }
-
 }
-

@@ -230,75 +230,92 @@ dialog h2 {
 
 @media (max-width: 1100px) {
   h1 {
-    font-size: 30.7px;
+    font-size: 28px;
   }
-
 }
 
 @media (max-width: 950px) and (min-width: 701px) {
   .flight {
-    flex-wrap: wrap; gap: 14px;
+    flex-wrap: wrap;
+    gap: 14px;
   }
-
   .airline {
     width: 100%;
   }
-
   .route {
     flex-basis: 60%;
   }
-
 }
 
 @media (max-width: 700px) {
   .layout {
+    width: calc(100% - 24px);
     grid-template-columns: minmax(0, 1fr);
-    gap: 24px;
+    gap: 18px;
+    padding: 16px 0 36px;
     min-height: 0;
   }
-
   h1 {
-    font-size: 28px;
+    font-size: 22px;
   }
-
   .results-subtitle {
-    font-size: 14px; margin-bottom: 8px;
+    font-size: 14px;
+    margin-bottom: 12px;
   }
-
+  .filters {
+    padding: 16px;
+    border-radius: 12px;
+  }
+  .filter-group label {
+    min-height: 36px;
+    font-size: 15px;
+  }
+  .filter-group input {
+    width: 18px;
+    height: 18px;
+  }
   .flight-list {
-    gap: 8px;
+    gap: 12px;
   }
-
   .flight {
-    padding: 28px 20px 20px;
+    padding: 18px 16px;
     flex-direction: column;
     align-items: stretch;
-    gap: 19px;
+    gap: 14px;
+    border-radius: 12px;
   }
-
   .flight:first-child {
-    padding-top: 36px;
+    padding-top: 18px;
   }
-
   .airline {
     font-size: 16px;
   }
-
   .route {
-    flex: auto; min-height: 53px;
+    flex: auto;
+    min-height: auto;
   }
-
   .fare {
-    min-height: 89px; align-content: end;
+    min-height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
-
+  .fare .button, .fare button, .flight .button {
+    width: 100%;
+    min-height: 44px;
+    font-size: 15px;
+    font-weight: 700;
+  }
   .rules {
-    margin-top: 8px; padding: 40px 24px 24px;
+    margin-top: 12px;
+    padding: 20px 16px;
+    border-radius: 12px;
   }
-
   .rules h2 {
-    font-size: 20px;
+    font-size: 18px;
   }
-
+  .rules p {
+    font-size: 13px;
+    line-height: 1.5;
+  }
 }
-
