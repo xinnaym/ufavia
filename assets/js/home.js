@@ -1,65 +1,52 @@
-const searchForm = document.querySelector('#flight-search');
-const departureInput = document.querySelector('#departure');
-const returnInput = document.querySelector('#return');
-const statusMessage = document.querySelector('#form-status');
+/**
+ * UFAvia — Главная страница (JavaScript)
+ * Валидация формы поиска билетов перед отправкой на сервер
+ */
+document.addEventListener('DOMContentLoaded', function () {
+  const searchForm = document.querySelector('#flight-search');
+  if (!searchForm) return;
 
-const today = new Date();
+  const departureInput = document.querySelector('#departure');
+  const returnInput = document.querySelector('#return');
+  const statusMessage = document.querySelector('#form-status');
 
-const localToday = new Date(
-  today.getTime() - today.getTimezoneOffset() * 60000
-)
-  .toISOString()
-  .split('T')[0];
+  const today = new Date();
+  const localToday = new Date(today.getTime() - today.getTimezoneOffset() * 60000)
+    .toISOString()
+    .split('T')[0];
 
-departureInput.min = localToday;
-returnInput.min = localToday;
+  if (departureInput) departureInput.min = localToday;
+  if (returnInput) returnInput.min = localToday;
 
-departureInput.addEventListener('change', () => {
-  returnInput.min = departureInput.value || localToday;
-
-  if (returnInput.value && returnInput.value < departureInput.value) {
-    returnInput.value = '';
-    statusMessage.textContent =
-      'Выберите дату возвращения не раньше даты вылета.';
-  } else {
-    statusMessage.textContent = '';
-  }
-});
-
-searchForm.addEventListener('submit', (event) => {
-  event.preventDefault();
-  statusMessage.textContent = '';
-
-  if (!searchForm.checkValidity()) {
-    statusMessage.textContent =
-      'Заполните все поля поиска и выберите даты.';
-
-    searchForm.reportValidity();
-    return;
+  if (departureInput && returnInput) {
+    departureInput.addEventListener('change', () => {
+      returnInput.min = departureInput.value || localToday;
+      if (returnInput.value && returnInput.value < departureInput.value) {
+        returnInput.value = '';
+        if (statusMessage) statusMessage.textContent = 'Выберите дату возвращения не раньше даты вылета.';
+      } else {
+        if (statusMessage) statusMessage.textContent = '';
+      }
+    });
   }
 
-  if (returnInput.value < departureInput.value) {
-    statusMessage.textContent =
-      'Дата возвращения не может быть раньше даты вылета.';
+  searchForm.addEventListener('submit', (event) => {
+    if (statusMessage) statusMessage.textContent = '';
 
-    returnInput.focus();
-    return;
-  }
+    if (!searchForm.checkValidity()) {
+      event.preventDefault();
+      if (statusMessage) statusMessage.textContent = 'Пожалуйста, заполните все поля поиска.';
+      searchForm.reportValidity();
+      return;
+    }
 
-  statusMessage.textContent =
-    'Параметры приняты. Ищем подходящие билеты…';
+    if (departureInput && returnInput && returnInput.value && returnInput.value < departureInput.value) {
+      event.preventDefault();
+      if (statusMessage) statusMessage.textContent = 'Дата возвращения не может быть раньше даты вылета.';
+      returnInput.focus();
+      return;
+    }
 
-  const params = new URLSearchParams({
-    from: document.querySelector('#origin').value.trim(),
-    to: document.querySelector('#destination').value.trim(),
-    date: departureInput.value,
-    back: returnInput.value
-  });
-  window.location.href = 'pages/search.html?' + params.toString();
-});
-
-document.querySelectorAll('a[href="#"]').forEach((link) => {
-  link.addEventListener('click', (event) => {
-    event.preventDefault();
+    // Форма отправляется нативно методом GET на pages/search.php
   });
 });

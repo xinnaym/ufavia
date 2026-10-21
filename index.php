@@ -71,7 +71,17 @@ $tomorrow = date('Y-m-d', strtotime('+1 day'));
             <input id="return" name="return" type="date" value="<?= $tomorrow ?>">
           </div>
 
-          <div class="search-field" style="max-width: 130px;">
+          <div class="search-field" style="max-width: 110px;">
+            <label for="passengers">Пассажиры</label>
+            <select id="passengers" name="passengers" style="height: 44px; width: 100%; border: 1px solid var(--line); border-radius: 4px; padding: 0 8px; background: #fff; font-size: 14px;">
+              <option value="1" selected>1 пасс.</option>
+              <option value="2">2 пасс.</option>
+              <option value="3">3 пасс.</option>
+              <option value="4">4+ пасс.</option>
+            </select>
+          </div>
+
+          <div class="search-field" style="max-width: 110px;">
             <label for="cabin">Класс</label>
             <select id="cabin" name="cabin" style="height: 44px; width: 100%; border: 1px solid var(--line); border-radius: 4px; padding: 0 8px; background: #fff; font-size: 14px;">
               <option value="any">Любой</option>

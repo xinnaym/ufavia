@@ -1,6 +1,7 @@
 <?php
 /**
  * UFAvia — Модуль работы с заказами
+ * Совместимость: PHP 7.2+, MySQL 5.7+ (PDO)
  */
 
 require_once __DIR__ . '/db.php';
@@ -17,7 +18,7 @@ function createOrder(array $data, array $items): array {
 
     $db = getDb();
 
-    // Генерация красивого номера заказа
+    // Генерация уникального номера заказа
     $orderNumber = 'UF-' . date('Y') . '-' . str_pad((string)mt_rand(100, 99999), 5, '0', STR_PAD_LEFT);
 
     $subtotal = 0;
@@ -34,6 +35,11 @@ function createOrder(array $data, array $items): array {
 
     $userId = !empty($data['user_id']) ? (int)$data['user_id'] : null;
 
+    $fullName = trim(($data['surname'] ?? '') . ' ' . ($data['name'] ?? ''));
+    if (empty(trim($fullName))) {
+        $fullName = trim($data['passenger_name'] ?? 'Пассажир');
+    }
+
     $stmt = $db->prepare("INSERT INTO orders (
         order_number, user_id, passenger_name, passenger_email, passenger_phone,
         passenger_passport, passenger_dob, insurance, transfer, meal, sms,
@@ -44,33 +50,30 @@ function createOrder(array $data, array $items): array {
         :fee, :total, :paym, :delm, :stat
     )");
 
-    $fullName = trim(($data['surname'] ?? '') . ' ' . ($data['name'] ?? ''));
-    if (empty(trim($fullName))) {
-        $fullName = trim($data['passenger_name'] ?? 'Пассажир');
-    }
+    $ok = $stmt->execute([
+        ':num' => $orderNumber,
+        ':uid' => $userId,
+        ':pname' => $fullName,
+        ':pemail' => trim($data['email'] ?? ''),
+        ':pphone' => trim($data['phone'] ?? ''),
+        ':ppass' => trim($data['passport'] ?? ''),
+        ':pdob' => trim($data['dob'] ?? ''),
+        ':ins' => $insurance,
+        ':tr' => $transfer,
+        ':meal' => $meal,
+        ':sms' => $sms,
+        ':fee' => $serviceFee,
+        ':total' => $totalAmount,
+        ':paym' => trim($data['payment_method'] ?? 'Банковская карта'),
+        ':delm' => trim($data['delivery_method'] ?? 'Электронный билет'),
+        ':stat' => 'Оплачен'
+    ]);
 
-    $stmt->bindValue(':num', $orderNumber, SQLITE3_TEXT);
-    $stmt->bindValue(':uid', $userId, $userId ? SQLITE3_INTEGER : SQLITE3_NULL);
-    $stmt->bindValue(':pname', $fullName, SQLITE3_TEXT);
-    $stmt->bindValue(':pemail', trim($data['email'] ?? ''), SQLITE3_TEXT);
-    $stmt->bindValue(':pphone', trim($data['phone'] ?? ''), SQLITE3_TEXT);
-    $stmt->bindValue(':ppass', trim($data['passport'] ?? ''), SQLITE3_TEXT);
-    $stmt->bindValue(':pdob', trim($data['dob'] ?? ''), SQLITE3_TEXT);
-    $stmt->bindValue(':ins', $insurance, SQLITE3_INTEGER);
-    $stmt->bindValue(':tr', $transfer, SQLITE3_INTEGER);
-    $stmt->bindValue(':meal', $meal, SQLITE3_INTEGER);
-    $stmt->bindValue(':sms', $sms, SQLITE3_INTEGER);
-    $stmt->bindValue(':fee', $serviceFee, SQLITE3_INTEGER);
-    $stmt->bindValue(':total', $totalAmount, SQLITE3_INTEGER);
-    $stmt->bindValue(':paym', trim($data['payment_method'] ?? 'Банковская карта'), SQLITE3_TEXT);
-    $stmt->bindValue(':delm', trim($data['delivery_method'] ?? 'Электронный билет'), SQLITE3_TEXT);
-    $stmt->bindValue(':stat', 'Оплачен', SQLITE3_TEXT);
-
-    if (!$stmt->execute()) {
+    if (!$ok) {
         return ['success' => false, 'error' => 'Не удалось сохранить заказ в базе данных'];
     }
 
-    $orderId = $db->lastInsertRowID();
+    $orderId = (int)$db->lastInsertId();
 
     // Сохраняем элементы заказа
     $itemStmt = $db->prepare("INSERT INTO order_items (
@@ -80,12 +83,13 @@ function createOrder(array $data, array $items): array {
     )");
 
     foreach ($items as $it) {
-        $itemStmt->bindValue(':oid', $orderId, SQLITE3_INTEGER);
-        $itemStmt->bindValue(':fid', (int)$it['id'], SQLITE3_INTEGER);
-        $itemStmt->bindValue(':seat', $it['seat_number'], SQLITE3_TEXT);
-        $itemStmt->bindValue(':pname', $fullName, SQLITE3_TEXT);
-        $itemStmt->bindValue(':price', (int)$it['item_price'], SQLITE3_INTEGER);
-        $itemStmt->execute();
+        $itemStmt->execute([
+            ':oid' => $orderId,
+            ':fid' => (int)$it['id'],
+            ':seat' => $it['seat_number'],
+            ':pname' => $fullName,
+            ':price' => (int)$it['item_price']
+        ]);
 
         // Уменьшаем количество свободных мест на рейсе
         decrementFlightSeats((int)$it['id'], 1);
@@ -107,9 +111,8 @@ function createOrder(array $data, array $items): array {
 function getOrderById(int $id): ?array {
     $db = getDb();
     $stmt = $db->prepare("SELECT * FROM orders WHERE id = :id");
-    $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
-    $res = $stmt->execute();
-    $order = $res->fetchArray(SQLITE3_ASSOC);
+    $stmt->execute([':id' => $id]);
+    $order = $stmt->fetch(PDO::FETCH_ASSOC);
     if (!$order) {
         return null;
     }
@@ -121,14 +124,8 @@ function getOrderById(int $id): ?array {
                                FROM order_items oi
                                JOIN flights f ON oi.flight_id = f.id
                                WHERE oi.order_id = :oid");
-    $itemsStmt->bindValue(':oid', $id, SQLITE3_INTEGER);
-    $itemsRes = $itemsStmt->execute();
-    
-    $items = [];
-    while ($row = $itemsRes->fetchArray(SQLITE3_ASSOC)) {
-        $items[] = $row;
-    }
-    $order['items'] = $items;
+    $itemsStmt->execute([':oid' => $id]);
+    $order['items'] = $itemsStmt->fetchAll(PDO::FETCH_ASSOC);
     return $order;
 }
 
@@ -138,9 +135,8 @@ function getOrderById(int $id): ?array {
 function getOrderByNumber(string $number): ?array {
     $db = getDb();
     $stmt = $db->prepare("SELECT id FROM orders WHERE order_number = :num");
-    $stmt->bindValue(':num', $number, SQLITE3_TEXT);
-    $res = $stmt->execute();
-    $row = $res->fetchArray(SQLITE3_ASSOC);
+    $stmt->execute([':num' => $number]);
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
     if ($row) {
         return getOrderById((int)$row['id']);
     }
@@ -148,26 +144,22 @@ function getOrderByNumber(string $number): ?array {
 }
 
 /**
- * Получение заказов пользователя
+ * Получение заказов пользователя (совместимо с ONLY_FULL_GROUP_BY в MySQL 5.7)
  */
 function getUserOrders(int $userId): array {
     $db = getDb();
-    $stmt = $db->prepare("SELECT o.*, 
-                                 f.origin, f.destination, f.departure_date, f.airline, f.flight_number
-                          FROM orders o
-                          LEFT JOIN order_items oi ON oi.order_id = o.id
-                          LEFT JOIN flights f ON oi.flight_id = f.id
-                          WHERE o.user_id = :uid
-                          GROUP BY o.id
-                          ORDER BY o.id DESC");
-    $stmt->bindValue(':uid', $userId, SQLITE3_INTEGER);
-    $res = $stmt->execute();
-
-    $orders = [];
-    while ($row = $res->fetchArray(SQLITE3_ASSOC)) {
-        $orders[] = $row;
-    }
-    return $orders;
+    $sql = "SELECT o.*, 
+                   (SELECT f.origin FROM order_items oi JOIN flights f ON oi.flight_id = f.id WHERE oi.order_id = o.id LIMIT 1) AS origin,
+                   (SELECT f.destination FROM order_items oi JOIN flights f ON oi.flight_id = f.id WHERE oi.order_id = o.id LIMIT 1) AS destination,
+                   (SELECT f.airline FROM order_items oi JOIN flights f ON oi.flight_id = f.id WHERE oi.order_id = o.id LIMIT 1) AS airline,
+                   (SELECT f.flight_number FROM order_items oi JOIN flights f ON oi.flight_id = f.id WHERE oi.order_id = o.id LIMIT 1) AS flight_number,
+                   (SELECT f.departure_date FROM order_items oi JOIN flights f ON oi.flight_id = f.id WHERE oi.order_id = o.id LIMIT 1) AS departure_date
+            FROM orders o
+            WHERE o.user_id = :uid
+            ORDER BY o.id DESC";
+    $stmt = $db->prepare($sql);
+    $stmt->execute([':uid' => $userId]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
 /**
@@ -176,20 +168,17 @@ function getUserOrders(int $userId): array {
 function getAllOrders(): array {
     $db = getDb();
     $sql = "SELECT o.*, 
-                   f.origin, f.destination, f.departure_date, f.airline, f.flight_number,
-                   u.name as registered_user_name, u.email as registered_user_email
+                   u.name as registered_user_name, u.email as registered_user_email,
+                   (SELECT f.origin FROM order_items oi JOIN flights f ON oi.flight_id = f.id WHERE oi.order_id = o.id LIMIT 1) AS origin,
+                   (SELECT f.destination FROM order_items oi JOIN flights f ON oi.flight_id = f.id WHERE oi.order_id = o.id LIMIT 1) AS destination,
+                   (SELECT f.airline FROM order_items oi JOIN flights f ON oi.flight_id = f.id WHERE oi.order_id = o.id LIMIT 1) AS airline,
+                   (SELECT f.flight_number FROM order_items oi JOIN flights f ON oi.flight_id = f.id WHERE oi.order_id = o.id LIMIT 1) AS flight_number,
+                   (SELECT f.departure_date FROM order_items oi JOIN flights f ON oi.flight_id = f.id WHERE oi.order_id = o.id LIMIT 1) AS departure_date
             FROM orders o
             LEFT JOIN users u ON o.user_id = u.id
-            LEFT JOIN order_items oi ON oi.order_id = o.id
-            LEFT JOIN flights f ON oi.flight_id = f.id
-            GROUP BY o.id
             ORDER BY o.id DESC";
-    $res = $db->query($sql);
-    $orders = [];
-    while ($row = $res->fetchArray(SQLITE3_ASSOC)) {
-        $orders[] = $row;
-    }
-    return $orders;
+    $stmt = $db->query($sql);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
 /**
@@ -198,7 +187,8 @@ function getAllOrders(): array {
 function updateOrderStatus(int $orderId, string $status): bool {
     $db = getDb();
     $stmt = $db->prepare("UPDATE orders SET status = :stat WHERE id = :id");
-    $stmt->bindValue(':stat', $status, SQLITE3_TEXT);
-    $stmt->bindValue(':id', $orderId, SQLITE3_INTEGER);
-    return (bool)$stmt->execute();
+    return $stmt->execute([
+        ':stat' => $status,
+        ':id' => $orderId
+    ]);
 }

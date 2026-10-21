@@ -112,6 +112,8 @@ select:focus-visible, textarea:focus-visible {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  text-align: center;
+  text-decoration: none;
   min-width: 94px;
   height: 40px;
   padding: 0 20px;
@@ -121,9 +123,10 @@ select:focus-visible, textarea:focus-visible {
   color: #fff;
   font-size: 13.5px;
   font-weight: 600;
-  line-height: 1;
+  line-height: normal;
   white-space: nowrap;
   transition: background .2s, border-color .2s, color .2s;
+  box-sizing: border-box;
 }
 .button:hover { background: var(--blue-dark); border-color: var(--blue-dark); }
 .button-outline { background: #fff; color: var(--blue); }

@@ -2,6 +2,7 @@
 /**
  * UFAvia — Модуль работы с рейсами (товары)
  * Реализация CRUD для администратора и поиск/фильтрация для пассажиров
+ * Совместимость: PHP 7.2+, MySQL 5.7+ (PDO)
  */
 
 require_once __DIR__ . '/db.php';
@@ -35,7 +36,7 @@ function getFlights(array $filters = []): array {
         $params[':cabin'] = $filters['cabin'];
     }
 
-    if (isset($filters['stops']) && $filters['stops'] !== 'any') {
+    if (isset($filters['stops']) && $filters['stops'] !== 'any' && $filters['stops'] !== '') {
         $where[] = "stops = :stops";
         $params[':stops'] = (int)$filters['stops'];
     }
@@ -66,16 +67,8 @@ function getFlights(array $filters = []): array {
     }
 
     $stmt = $db->prepare($sql);
-    foreach ($params as $key => $val) {
-        $stmt->bindValue($key, $val);
-    }
-
-    $res = $stmt->execute();
-    $flights = [];
-    while ($row = $res->fetchArray(SQLITE3_ASSOC)) {
-        $flights[] = $row;
-    }
-    return $flights;
+    $stmt->execute($params);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
 /**
@@ -84,9 +77,8 @@ function getFlights(array $filters = []): array {
 function getFlightById(int $id): ?array {
     $db = getDb();
     $stmt = $db->prepare("SELECT * FROM flights WHERE id = :id");
-    $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
-    $res = $stmt->execute();
-    $flight = $res->fetchArray(SQLITE3_ASSOC);
+    $stmt->execute([':id' => $id]);
+    $flight = $stmt->fetch(PDO::FETCH_ASSOC);
     return $flight ?: null;
 }
 
@@ -98,15 +90,11 @@ function getPopularDestinations(): array {
     $sql = "SELECT destination, destination_code, MIN(price) as min_price 
             FROM flights 
             WHERE origin = 'Уфа' 
-            GROUP BY destination 
+            GROUP BY destination, destination_code 
             ORDER BY min_price ASC 
             LIMIT 4";
-    $res = $db->query($sql);
-    $destinations = [];
-    while ($row = $res->fetchArray(SQLITE3_ASSOC)) {
-        $destinations[] = $row;
-    }
-    return $destinations;
+    $stmt = $db->query($sql);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
 /**
@@ -126,24 +114,24 @@ function addFlight(array $data): bool {
         :cabin, :stops
     )");
 
-    $stmt->bindValue(':fn', trim($data['flight_number']), SQLITE3_TEXT);
-    $stmt->bindValue(':al', trim($data['airline']), SQLITE3_TEXT);
-    $stmt->bindValue(':alc', strtoupper(trim($data['airline_code'] ?? 'UF')), SQLITE3_TEXT);
-    $stmt->bindValue(':orig', trim($data['origin']), SQLITE3_TEXT);
-    $stmt->bindValue(':origc', strtoupper(trim($data['origin_code'] ?? 'UFA')), SQLITE3_TEXT);
-    $stmt->bindValue(':dest', trim($data['destination']), SQLITE3_TEXT);
-    $stmt->bindValue(':destc', strtoupper(trim($data['destination_code'] ?? 'XXX')), SQLITE3_TEXT);
-    $stmt->bindValue(':ddate', trim($data['departure_date']), SQLITE3_TEXT);
-    $stmt->bindValue(':dtime', trim($data['departure_time']), SQLITE3_TEXT);
-    $stmt->bindValue(':atime', trim($data['arrival_time']), SQLITE3_TEXT);
-    $stmt->bindValue(':dur', (int)$data['duration'], SQLITE3_INTEGER);
-    $stmt->bindValue(':price', (int)$data['price'], SQLITE3_INTEGER);
-    $stmt->bindValue(':stot', (int)($data['seats_total'] ?? 180), SQLITE3_INTEGER);
-    $stmt->bindValue(':savail', (int)($data['seats_available'] ?? 42), SQLITE3_INTEGER);
-    $stmt->bindValue(':cabin', trim($data['cabin'] ?? 'economy'), SQLITE3_TEXT);
-    $stmt->bindValue(':stops', (int)($data['stops'] ?? 0), SQLITE3_INTEGER);
-
-    return (bool)$stmt->execute();
+    return $stmt->execute([
+        ':fn' => trim($data['flight_number']),
+        ':al' => trim($data['airline']),
+        ':alc' => strtoupper(trim($data['airline_code'] ?? 'UF')),
+        ':orig' => trim($data['origin']),
+        ':origc' => strtoupper(trim($data['origin_code'] ?? 'UFA')),
+        ':dest' => trim($data['destination']),
+        ':destc' => strtoupper(trim($data['destination_code'] ?? 'XXX')),
+        ':ddate' => trim($data['departure_date']),
+        ':dtime' => trim($data['departure_time']),
+        ':atime' => trim($data['arrival_time']),
+        ':dur' => (int)$data['duration'],
+        ':price' => (int)$data['price'],
+        ':stot' => (int)($data['seats_total'] ?? 180),
+        ':savail' => (int)($data['seats_available'] ?? 42),
+        ':cabin' => trim($data['cabin'] ?? 'economy'),
+        ':stops' => (int)($data['stops'] ?? 0)
+    ]);
 }
 
 /**
@@ -170,25 +158,25 @@ function updateFlight(int $id, array $data): bool {
         stops = :stops
         WHERE id = :id");
 
-    $stmt->bindValue(':fn', trim($data['flight_number']), SQLITE3_TEXT);
-    $stmt->bindValue(':al', trim($data['airline']), SQLITE3_TEXT);
-    $stmt->bindValue(':alc', strtoupper(trim($data['airline_code'])), SQLITE3_TEXT);
-    $stmt->bindValue(':orig', trim($data['origin']), SQLITE3_TEXT);
-    $stmt->bindValue(':origc', strtoupper(trim($data['origin_code'])), SQLITE3_TEXT);
-    $stmt->bindValue(':dest', trim($data['destination']), SQLITE3_TEXT);
-    $stmt->bindValue(':destc', strtoupper(trim($data['destination_code'])), SQLITE3_TEXT);
-    $stmt->bindValue(':ddate', trim($data['departure_date']), SQLITE3_TEXT);
-    $stmt->bindValue(':dtime', trim($data['departure_time']), SQLITE3_TEXT);
-    $stmt->bindValue(':atime', trim($data['arrival_time']), SQLITE3_TEXT);
-    $stmt->bindValue(':dur', (int)$data['duration'], SQLITE3_INTEGER);
-    $stmt->bindValue(':price', (int)$data['price'], SQLITE3_INTEGER);
-    $stmt->bindValue(':stot', (int)$data['seats_total'], SQLITE3_INTEGER);
-    $stmt->bindValue(':savail', (int)$data['seats_available'], SQLITE3_INTEGER);
-    $stmt->bindValue(':cabin', trim($data['cabin']), SQLITE3_TEXT);
-    $stmt->bindValue(':stops', (int)$data['stops'], SQLITE3_INTEGER);
-    $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
-
-    return (bool)$stmt->execute();
+    return $stmt->execute([
+        ':fn' => trim($data['flight_number']),
+        ':al' => trim($data['airline']),
+        ':alc' => strtoupper(trim($data['airline_code'])),
+        ':orig' => trim($data['origin']),
+        ':origc' => strtoupper(trim($data['origin_code'])),
+        ':dest' => trim($data['destination']),
+        ':destc' => strtoupper(trim($data['destination_code'])),
+        ':ddate' => trim($data['departure_date']),
+        ':dtime' => trim($data['departure_time']),
+        ':atime' => trim($data['arrival_time']),
+        ':dur' => (int)$data['duration'],
+        ':price' => (int)$data['price'],
+        ':stot' => (int)$data['seats_total'],
+        ':savail' => (int)$data['seats_available'],
+        ':cabin' => trim($data['cabin']),
+        ':stops' => (int)$data['stops'],
+        ':id' => $id
+    ]);
 }
 
 /**
@@ -197,8 +185,7 @@ function updateFlight(int $id, array $data): bool {
 function deleteFlight(int $id): bool {
     $db = getDb();
     $stmt = $db->prepare("DELETE FROM flights WHERE id = :id");
-    $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
-    return (bool)$stmt->execute();
+    return $stmt->execute([':id' => $id]);
 }
 
 /**
@@ -206,8 +193,9 @@ function deleteFlight(int $id): bool {
  */
 function decrementFlightSeats(int $flightId, int $count = 1) {
     $db = getDb();
-    $stmt = $db->prepare("UPDATE flights SET seats_available = MAX(0, seats_available - :cnt) WHERE id = :id");
-    $stmt->bindValue(':cnt', $count, SQLITE3_INTEGER);
-    $stmt->bindValue(':id', $flightId, SQLITE3_INTEGER);
-    $stmt->execute();
+    $stmt = $db->prepare("UPDATE flights SET seats_available = CASE WHEN seats_available >= :cnt THEN seats_available - :cnt ELSE 0 END WHERE id = :id");
+    $stmt->execute([
+        ':cnt' => $count,
+        ':id' => $flightId
+    ]);
 }

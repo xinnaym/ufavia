@@ -1,2 +1,4 @@
 <?php
-require_once __DIR__ . '/pages/tickets.php';
+$qs = !empty($_SERVER['QUERY_STRING']) ? '?' . $_SERVER['QUERY_STRING'] : '';
+header('Location: pages/tickets.php' . $qs);
+exit;

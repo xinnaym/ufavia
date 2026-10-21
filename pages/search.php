@@ -9,24 +9,34 @@ require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/flights.php';
 require_once __DIR__ . '/../includes/cart.php';
 
-$origin = $_GET['origin'] ?? 'Уфа';
-$destination = $_GET['destination'] ?? 'Москва';
+$origin = isset($_GET['origin']) ? trim($_GET['origin']) : '';
+$destination = isset($_GET['destination']) ? trim($_GET['destination']) : '';
 $departureDate = $_GET['departure'] ?? '';
 $cabin = $_GET['cabin'] ?? 'any';
 $stops = $_GET['stops'] ?? 'any';
 $priceRange = $_GET['price'] ?? '';
 $sort = $_GET['sort'] ?? 'price';
+$passengers = max(1, (int)($_GET['passengers'] ?? 1));
 
 $filters = [
-    'origin' => $origin,
-    'destination' => $destination,
     'cabin' => $cabin,
     'stops' => $stops,
     'price_range' => $priceRange,
-    'sort' => $sort
+    'sort' => $sort,
+    'passengers' => $passengers
 ];
 
-// Если искали по дате, но ничего не нашлось, покажем все рейсы на это направление
+if ($origin !== '') {
+    $filters['origin'] = $origin;
+}
+if ($destination !== '') {
+    $filters['destination'] = $destination;
+}
+if ($departureDate !== '') {
+    $filters['departure_date'] = $departureDate;
+}
+
+// Поиск рейсов
 $flights = getFlights($filters);
 if (empty($flights) && (!empty($origin) || !empty($destination))) {
     // Мягкий поиск
@@ -45,7 +55,7 @@ $inCartFlightIds = array_column($cartItems, 'id');
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>UFAvia — <?= htmlspecialchars($origin) ?> → <?= htmlspecialchars($destination) ?></title>
+  <title>UFAvia — <?= (!empty($origin) && !empty($destination)) ? htmlspecialchars($origin) . ' → ' . htmlspecialchars($destination) : 'Все доступные авиабилеты' ?></title>
 
   <!-- Google Fonts: Montserrat & Open Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -85,6 +95,7 @@ $inCartFlightIds = array_column($cartItems, 'id');
 
       <input type="hidden" name="origin" value="<?= htmlspecialchars($origin) ?>">
       <input type="hidden" name="destination" value="<?= htmlspecialchars($destination) ?>">
+      <input type="hidden" name="passengers" value="<?= $passengers ?>">
 
       <!-- Сортировка -->
       <div class="filter-group" role="group" aria-labelledby="sort-title">
@@ -129,9 +140,19 @@ $inCartFlightIds = array_column($cartItems, 'id');
     <section class="results" id="results" aria-labelledby="results-title">
       <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
         <div>
-          <h1 id="results-title" style="margin: 0;"><?= htmlspecialchars($origin) ?> → <?= htmlspecialchars($destination) ?></h1>
+          <h1 id="results-title" style="margin: 0;">
+            <?php if (!empty($origin) && !empty($destination)): ?>
+              <?= htmlspecialchars($origin) ?> → <?= htmlspecialchars($destination) ?>
+            <?php elseif (!empty($origin)): ?>
+              Рейсы из г. <?= htmlspecialchars($origin) ?>
+            <?php elseif (!empty($destination)): ?>
+              Рейсы в г. <?= htmlspecialchars($destination) ?>
+            <?php else: ?>
+              Все доступные авиабилеты
+            <?php endif; ?>
+          </h1>
           <p class="results-subtitle" id="result-count" style="margin-top: 4px;">
-            Найдено рейсов: <strong><?= count($flights) ?></strong>
+            Найдено рейсов: <strong><?= count($flights) ?></strong> · Пассажиров: <strong><?= $passengers ?></strong>
           </p>
         </div>
         <div style="font-size: 13px; color: #64748b;">

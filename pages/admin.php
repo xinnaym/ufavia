@@ -138,30 +138,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'toggle_user_role') {
     $targetUserId = (int)$_POST['user_id'];
     $targetRole = $_POST['new_role'] === 'admin' ? 'admin' : 'user';
     $stmt = $db->prepare("UPDATE users SET role = :role WHERE id = :id");
-    $stmt->bindValue(':role', $targetRole, SQLITE3_TEXT);
-    $stmt->bindValue(':id', $targetUserId, SQLITE3_INTEGER);
-    $stmt->execute();
+    $stmt->execute([':role' => $targetRole, ':id' => $targetUserId]);
     setFlash('success', 'Роль пользователя изменена на ' . $targetRole);
     header('Location: admin.php?tab=users');
     exit;
 }
 
 // Сбор статистики для Dashboard
-$totalFlights = $db->querySingle("SELECT COUNT(*) FROM flights");
-$totalOrders  = $db->querySingle("SELECT COUNT(*) FROM orders");
-$totalRevenue = $db->querySingle("SELECT SUM(total_amount) FROM orders WHERE status != 'Отменён'");
-$totalUsers   = $db->querySingle("SELECT COUNT(*) FROM users");
+$totalFlights = (int)$db->query("SELECT COUNT(*) FROM flights")->fetchColumn();
+$totalOrders  = (int)$db->query("SELECT COUNT(*) FROM orders")->fetchColumn();
+$totalRevenue = (int)$db->query("SELECT COALESCE(SUM(total_amount), 0) FROM orders WHERE status != 'Отменён'")->fetchColumn();
+$totalUsers   = (int)$db->query("SELECT COUNT(*) FROM users")->fetchColumn();
 
 $activeTab = $_GET['tab'] ?? 'flights';
 $flightsList = getFlights(['sort' => 'price']);
 $ordersList = getAllOrders();
 
 // Пользователи
-$usersRes = $db->query("SELECT * FROM users ORDER BY id ASC");
-$usersList = [];
-while ($row = $usersRes->fetchArray(SQLITE3_ASSOC)) {
-    $usersList[] = $row;
-}
+$usersList = $db->query("SELECT * FROM users ORDER BY id ASC")->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!doctype html>
 <html lang="ru">

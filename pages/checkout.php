@@ -15,7 +15,7 @@ $order = $orderId > 0 ? getOrderById($orderId) : null;
 // Если order_id не передан или не найден, возьмем последний заказ
 if (!$order) {
     $db = getDb();
-    $lastId = $db->querySingle("SELECT id FROM orders ORDER BY id DESC LIMIT 1");
+    $lastId = $db->query("SELECT id FROM orders ORDER BY id DESC LIMIT 1")->fetchColumn();
     if ($lastId) {
         $order = getOrderById((int)$lastId);
     }
@@ -79,8 +79,8 @@ $qrText = "UFAVIA-TICKET:" . $order['order_number'] . "|" . ($firstItem['flight_
   <?php include __DIR__ . '/../includes/header.php'; ?>
 
   <main>
-    <div class="container">
-      <div class="confirm-wrap">
+    <div class="container" style="display: flex; justify-content: center;">
+      <div class="confirm-wrap" style="margin: 0 auto;">
 
         <!-- Иконка успешного заказа -->
         <div class="success-icon" aria-hidden="true">
@@ -162,53 +162,11 @@ $qrText = "UFAVIA-TICKET:" . $order['order_number'] . "|" . ($firstItem['flight_
             </div>
           </div>
 
-          <!-- Блок с QR-кодом для аэропорта -->
+          <!-- Черный квадрат вместо QR-кода -->
           <div class="qr-box">
-            <!-- Векторный QR-код с метками аэропорта -->
-            <svg viewBox="0 0 160 160" width="130" height="130">
-              <rect width="160" height="160" fill="#ffffff" />
-              <!-- Top-left finder pattern -->
-              <rect x="10" y="10" width="40" height="40" fill="#0f172a" />
-              <rect x="18" y="18" width="24" height="24" fill="#ffffff" />
-              <rect x="24" y="24" width="12" height="12" fill="#0f172a" />
-
-              <!-- Top-right finder pattern -->
-              <rect x="110" y="10" width="40" height="40" fill="#0f172a" />
-              <rect x="118" y="18" width="24" height="24" fill="#ffffff" />
-              <rect x="124" y="24" width="12" height="12" fill="#0f172a" />
-
-              <!-- Bottom-left finder pattern -->
-              <rect x="10" y="110" width="40" height="40" fill="#0f172a" />
-              <rect x="18" y="118" width="24" height="24" fill="#ffffff" />
-              <rect x="24" y="124" width="12" height="12" fill="#0f172a" />
-
-              <!-- Data dots pattern representing ticket data -->
-              <rect x="60" y="15" width="8" height="8" fill="#0f172a" />
-              <rect x="75" y="15" width="8" height="8" fill="#0f172a" />
-              <rect x="90" y="22" width="8" height="8" fill="#0f172a" />
-              <rect x="60" y="32" width="8" height="8" fill="#0f172a" />
-              <rect x="80" y="32" width="8" height="8" fill="#0f172a" />
-              <rect x="20" y="60" width="8" height="8" fill="#0f172a" />
-              <rect x="35" y="70" width="8" height="8" fill="#0f172a" />
-              <rect x="55" y="60" width="14" height="14" fill="#0f172a" />
-              <rect x="80" y="55" width="8" height="8" fill="#0f172a" />
-              <rect x="100" y="65" width="12" height="12" fill="#0f172a" />
-              <rect x="130" y="60" width="8" height="8" fill="#0f172a" />
-              <rect x="140" y="75" width="8" height="8" fill="#0f172a" />
-              <rect x="60" y="90" width="8" height="8" fill="#0f172a" />
-              <rect x="80" y="85" width="12" height="12" fill="#0f172a" />
-              <rect x="100" y="90" width="8" height="8" fill="#0f172a" />
-              <rect x="120" y="95" width="8" height="8" fill="#0f172a" />
-              <rect x="60" y="115" width="8" height="8" fill="#0f172a" />
-              <rect x="75" y="125" width="12" height="12" fill="#0f172a" />
-              <rect x="105" y="115" width="8" height="8" fill="#0f172a" />
-              <rect x="125" y="120" width="8" height="8" fill="#0f172a" />
-              <rect x="65" y="140" width="8" height="8" fill="#0f172a" />
-              <rect x="90" y="140" width="12" height="12" fill="#0f172a" />
-              <rect x="115" y="135" width="8" height="8" fill="#0f172a" />
-            </svg>
+            <div style="width: 120px; height: 120px; background-color: #000000; margin: 0 auto; border-radius: 2px;" aria-label="Электронный код"></div>
             <div style="font-size: 11px; color: #64748b; margin-top: 8px; text-align: center; letter-spacing: 0.5px;">
-              QR-КОД ДЛЯ РЕГИСТРАЦИИ В АЭРОПОРТУ (UFA/SVO)<br>
+              ЭЛЕКТРОННЫЙ КОД БИЛЕТА (UFA/SVO)<br>
               <strong><?= htmlspecialchars($order['order_number']) ?></strong>
             </div>
           </div>
@@ -216,9 +174,6 @@ $qrText = "UFAVIA-TICKET:" . $order['order_number'] . "|" . ($firstItem['flight_
 
         <!-- Кнопки действий -->
         <div class="action-buttons-wrap" style="display: flex; gap: 14px; justify-content: center; margin-top: 28px; flex-wrap: wrap;">
-          <button type="button" class="button btn-print-hide" onclick="window.print()" style="background: var(--blue);">
-            🖨 Распечатать электронный билет
-          </button>
           <a href="profile.php" class="button button-outline">
             Перейти в Личный кабинет
           </a>

@@ -2,6 +2,8 @@
 /**
  * UFAvia — Страница выбора и бронирования авиабилетов
  * Детальная информация о рейсе, интерактивная схема салона, расчет цены, добавление в корзину
+ * Практическая работа № 1
+ * Поддержка PHP 7.2+
  */
 
 require_once __DIR__ . '/../includes/db.php';
@@ -9,30 +11,47 @@ require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/flights.php';
 require_once __DIR__ . '/../includes/cart.php';
 
-$flightId = isset($_GET['flight_id']) ? (int)$_GET['flight_id'] : 1;
+$flightId = isset($_REQUEST['flight_id']) ? (int)$_REQUEST['flight_id'] : 1;
 $flight = getFlightById($flightId);
 
 if (!$flight) {
-    // Если рейс не найден, берем первый доступный
     $all = getFlights();
     $flight = !empty($all) ? $all[0] : null;
 }
 
+// Если в базе вообще нет рейсов, создаем дефолтный рейс, чтобы страница всегда работала
 if (!$flight) {
-    header('Location: search.php');
-    exit;
+    $flight = [
+        'id' => 1,
+        'flight_number' => 'SU-1234',
+        'airline' => 'Аэрофлот',
+        'airline_code' => 'SU',
+        'origin' => 'Уфа',
+        'origin_code' => 'UFA',
+        'destination' => 'Москва',
+        'destination_code' => 'SVO',
+        'departure_date' => date('Y-m-d'),
+        'departure_time' => '08:20',
+        'arrival_time' => '09:35',
+        'duration' => 135,
+        'price' => 5400,
+        'seats_total' => 180,
+        'seats_available' => 38,
+        'cabin' => 'economy',
+        'stops' => 0
+    ];
 }
 
-// Обработка добавления в корзину
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add_to_cart') {
-    $seat = trim($_POST['seat_number'] ?? '2B');
-    $price = (int)($_POST['total_price'] ?? $flight['price']);
-    addToCart($flight['id'], $seat, $price);
+// Обработка добавления билета в корзину (работает и через POST, и через GET)
+if (isset($_REQUEST['action']) && $_REQUEST['action'] === 'add_to_cart') {
+    $seat = trim($_REQUEST['seat_number'] ?? '2B');
+    $price = (int)($_REQUEST['total_price'] ?? ($flight['price'] + 300));
+    addToCart((int)$flight['id'], $seat, $price);
     header('Location: cart.php');
     exit;
 }
 
-$basePrice = $flight['price'];
+$basePrice = (int)$flight['price'];
 $serviceFee = 150;
 ?>
 <!doctype html>
@@ -56,8 +75,8 @@ $serviceFee = 150;
   <main>
     <div class="container">
       <div style="margin-bottom: 20px;">
-        <a href="search.php?origin=<?= urlencode($flight['origin']) ?>&destination=<?= urlencode($flight['destination']) ?>" style="color: var(--blue); font-size: 14px; text-decoration: underline;">
-          ← Назад к списку рейсов
+        <a href="search.php" style="color: var(--blue); font-size: 14px; text-decoration: underline;">
+          ← Назад к списку всех рейсов
         </a>
       </div>
 
@@ -65,9 +84,9 @@ $serviceFee = 150;
         <!-- ── Левая колонка: Детали рейса и Схема мест ── -->
         <div class="left-col">
           <!-- Информация о рейсе -->
-          <section class="card anim" aria-label="Информация о рейсе">
+          <section class="card" aria-label="Информация о рейсе">
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--line); padding-bottom: 12px; margin-bottom: 16px;">
-              <h2 class="card-title" style="margin: 0;">Информация о рейсе</h2>
+              <h2 class="card-title" style="margin: 0; font-size: 22px;">Информация о рейсе</h2>
               <span style="font-weight: 700; color: var(--blue); background: #e0f2fe; padding: 4px 10px; border-radius: 4px; font-size: 13px;">
                 <?= htmlspecialchars($flight['flight_number']) ?>
               </span>
@@ -110,68 +129,68 @@ $serviceFee = 150;
           </section>
 
           <!-- Выбор места в самолёте -->
-          <section class="card anim d1" aria-label="Выбор места в самолёте">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-              <h2 class="card-title" style="margin: 0;">Выбор места в самолёте</h2>
-              <span id="selected-seat-badge" style="font-size: 14px; font-weight: 700; color: var(--orange); background: #fff7ed; padding: 4px 10px; border-radius: 4px; border: 1px solid #ffedd5;">
+          <section class="card" aria-label="Выбор места в самолёте">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
+              <h2 class="card-title" style="margin: 0; font-size: 22px;">Выбор места в салоне</h2>
+              <span id="selected-seat-badge" style="font-size: 14px; font-weight: 700; color: var(--orange); background: #fff7ed; padding: 4px 12px; border-radius: 4px; border: 1px solid #ffedd5;">
                 Выбрано место: 2B
               </span>
             </div>
 
             <p style="font-size: 13px; color: #64748b; margin-bottom: 16px;">
-              Выберите любое свободное место на интерактивной схеме лайнера Boeing 737-800.
+              Нажмите на любое свободное место на интерактивной схеме лайнера (Ряды 1–4):
             </p>
 
             <div class="seat-map-bg" role="group" aria-label="Схема салона самолёта">
-              <!-- Ряд 1 -->
+              <!-- Ряд 1 (Комфорт +500 ₽) -->
               <div class="seat-row">
-                <button type="button" class="seat seat--free" data-seat="1A" data-extra="500" aria-label="Место 1A, свободно">1A</button>
-                <button type="button" class="seat seat--free" data-seat="1B" data-extra="500" aria-label="Место 1B, свободно">1B</button>
-                <button type="button" class="seat seat--occupied" data-seat="1C" aria-label="Место 1C, занято" disabled>1C</button>
-                <button type="button" class="seat seat--occupied" data-seat="1D" aria-label="Место 1D, занято" disabled>1D</button>
-                <button type="button" class="seat seat--free" data-seat="1E" data-extra="500" aria-label="Место 1E, свободно">1E</button>
-                <button type="button" class="seat seat--free" data-seat="1F" data-extra="500" aria-label="Место 1F, свободно">1F</button>
+                <button type="button" class="seat seat--free" data-seat="1A" data-extra="500" onclick="selectSeat('1A', 500)">1A</button>
+                <button type="button" class="seat seat--free" data-seat="1B" data-extra="500" onclick="selectSeat('1B', 500)">1B</button>
+                <button type="button" class="seat seat--occupied" data-seat="1C" disabled>1C</button>
+                <button type="button" class="seat seat--occupied" data-seat="1D" disabled>1D</button>
+                <button type="button" class="seat seat--free" data-seat="1E" data-extra="500" onclick="selectSeat('1E', 500)">1E</button>
+                <button type="button" class="seat seat--free" data-seat="1F" data-extra="500" onclick="selectSeat('1F', 500)">1F</button>
               </div>
-              <!-- Ряд 2 -->
+              <!-- Ряд 2 (Стандарт +300 ₽) -->
               <div class="seat-row">
-                <button type="button" class="seat seat--free" data-seat="2A" data-extra="300" aria-label="Место 2A, свободно">2A</button>
-                <button type="button" class="seat seat--selected" data-seat="2B" data-extra="300" aria-label="Место 2B, выбрано" aria-pressed="true">2B</button>
-                <button type="button" class="seat seat--free" data-seat="2C" data-extra="300" aria-label="Место 2C, свободно">2C</button>
-                <button type="button" class="seat seat--free" data-seat="2D" data-extra="300" aria-label="Место 2D, свободно">2D</button>
-                <button type="button" class="seat seat--occupied" data-seat="2E" aria-label="Место 2E, занято" disabled>2E</button>
-                <button type="button" class="seat seat--free" data-seat="2F" data-extra="300" aria-label="Место 2F, свободно">2F</button>
+                <button type="button" class="seat seat--free" data-seat="2A" data-extra="300" onclick="selectSeat('2A', 300)">2A</button>
+                <button type="button" class="seat seat--selected" data-seat="2B" data-extra="300" onclick="selectSeat('2B', 300)">2B</button>
+                <button type="button" class="seat seat--free" data-seat="2C" data-extra="300" onclick="selectSeat('2C', 300)">2C</button>
+                <button type="button" class="seat seat--free" data-seat="2D" data-extra="300" onclick="selectSeat('2D', 300)">2D</button>
+                <button type="button" class="seat seat--occupied" data-seat="2E" disabled>2E</button>
+                <button type="button" class="seat seat--free" data-seat="2F" data-extra="300" onclick="selectSeat('2F', 300)">2F</button>
               </div>
-              <!-- Ряд 3 -->
+              <!-- Ряд 3 (Стандарт +300 ₽) -->
               <div class="seat-row">
-                <button type="button" class="seat seat--free" data-seat="3A" data-extra="300" aria-label="Место 3A, свободно">3A</button>
-                <button type="button" class="seat seat--free" data-seat="3B" data-extra="300" aria-label="Место 3B, свободно">3B</button>
-                <button type="button" class="seat seat--free" data-seat="3C" data-extra="300" aria-label="Место 3C, свободно">3C</button>
-                <button type="button" class="seat seat--occupied" data-seat="3D" aria-label="Место 3D, занято" disabled>3D</button>
-                <button type="button" class="seat seat--free" data-seat="3E" data-extra="300" aria-label="Место 3E, свободно">3E</button>
-                <button type="button" class="seat seat--free" data-seat="3F" data-extra="300" aria-label="Место 3F, свободно">3F</button>
+                <button type="button" class="seat seat--free" data-seat="3A" data-extra="300" onclick="selectSeat('3A', 300)">3A</button>
+                <button type="button" class="seat seat--free" data-seat="3B" data-extra="300" onclick="selectSeat('3B', 300)">3B</button>
+                <button type="button" class="seat seat--free" data-seat="3C" data-extra="300" onclick="selectSeat('3C', 300)">3C</button>
+                <button type="button" class="seat seat--occupied" data-seat="3D" disabled>3D</button>
+                <button type="button" class="seat seat--free" data-seat="3E" data-extra="300" onclick="selectSeat('3E', 300)">3E</button>
+                <button type="button" class="seat seat--free" data-seat="3F" data-extra="300" onclick="selectSeat('3F', 300)">3F</button>
               </div>
-              <!-- Ряд 4 -->
+              <!-- Ряд 4 (Базовые места 0 ₽) -->
               <div class="seat-row">
-                <button type="button" class="seat seat--free" data-seat="4A" data-extra="0" aria-label="Место 4A, свободно">4A</button>
-                <button type="button" class="seat seat--free" data-seat="4B" data-extra="0" aria-label="Место 4B, свободно">4B</button>
-                <button type="button" class="seat seat--free" data-seat="4C" data-extra="0" aria-label="Место 4C, свободно">4C</button>
-                <button type="button" class="seat seat--free" data-seat="4D" data-extra="0" aria-label="Место 4D, свободно">4D</button>
-                <button type="button" class="seat seat--free" data-seat="4E" data-extra="0" aria-label="Место 4E, свободно">4E</button>
-                <button type="button" class="seat seat--occupied" data-seat="4F" aria-label="Место 4F, занято" disabled>4F</button>
+                <button type="button" class="seat seat--free" data-seat="4A" data-extra="0" onclick="selectSeat('4A', 0)">4A</button>
+                <button type="button" class="seat seat--free" data-seat="4B" data-extra="0" onclick="selectSeat('4B', 0)">4B</button>
+                <button type="button" class="seat seat--free" data-seat="4C" data-extra="0" onclick="selectSeat('4C', 0)">4C</button>
+                <button type="button" class="seat seat--free" data-seat="4D" data-extra="0" onclick="selectSeat('4D', 0)">4D</button>
+                <button type="button" class="seat seat--free" data-seat="4E" data-extra="0" onclick="selectSeat('4E', 0)">4E</button>
+                <button type="button" class="seat seat--occupied" data-seat="4F" disabled>4F</button>
               </div>
 
-              <!-- Легенда обозначений -->
-              <div class="legend" aria-label="Условные обозначения">
-                <div class="legend-item">
-                  <div class="legend-dot legend-dot--free" aria-hidden="true"></div>
+              <!-- Легенда -->
+              <div class="legend" style="display: flex; gap: 20px; justify-content: center; margin-top: 20px; font-size: 13px;">
+                <div class="legend-item" style="display: flex; align-items: center; gap: 6px;">
+                  <span class="seat seat--free" style="width: 22px; height: 22px; font-size: 10px;"></span>
                   Свободно
                 </div>
-                <div class="legend-item">
-                  <div class="legend-dot legend-dot--selected" aria-hidden="true"></div>
+                <div class="legend-item" style="display: flex; align-items: center; gap: 6px;">
+                  <span class="seat seat--selected" style="width: 22px; height: 22px; font-size: 10px;"></span>
                   Выбрано
                 </div>
-                <div class="legend-item">
-                  <div class="legend-dot legend-dot--occupied" aria-hidden="true"></div>
+                <div class="legend-item" style="display: flex; align-items: center; gap: 6px;">
+                  <span class="seat seat--occupied" style="width: 22px; height: 22px; font-size: 10px;"></span>
                   Занято
                 </div>
               </div>
@@ -179,18 +198,18 @@ $serviceFee = 150;
           </section>
 
           <!-- Договор оферты -->
-          <section class="card anim d2" style="font-size: 13px; color: #64748b; line-height: 1.6;">
+          <section class="card" style="font-size: 13px; color: #64748b; line-height: 1.6;">
             <h3 style="font-size: 15px; color: var(--ink); margin-bottom: 8px;">Договор публичной оферты о купле-продаже авиабилетов</h3>
             <p>
-              Нажимая кнопку «Купить авиабилет», вы подтверждаете согласие с условиями публичной оферты перевозчика <?= htmlspecialchars($flight['airline']) ?>, правилами применения тарифа, политикой обработки персональных данных и условиями возврата.
+              Нажимая кнопку «Купить авиабилет», вы подтверждаете согласие с условиями публичной оферты перевозчика <?= htmlspecialchars($flight['airline']) ?>, правилами применения тарифа, политикой обработки персональных данных и условиями возврата билета.
             </p>
           </section>
         </div>
 
         <!-- ── Правая колонка: Калькулятор заказа ── -->
         <aside class="right-col">
-          <section class="card anim d2" aria-label="Ваш заказ">
-            <h2 class="card-title">Ваш заказ</h2>
+          <section class="card" aria-label="Ваш заказ">
+            <h2 class="card-title" style="font-size: 20px; margin-bottom: 16px;">Ваш заказ</h2>
 
             <div class="order-rows">
               <div class="order-row">
@@ -207,23 +226,24 @@ $serviceFee = 150;
               </div>
             </div>
 
-            <div class="order-total">
-              <span class="order-total-label">Итого:</span>
-              <span class="order-total-value" id="price-total"><?= number_format($basePrice + 300 + $serviceFee, 0, '', ' ') ?> ₽</span>
+            <div class="order-total" style="border-top: 1px solid var(--line); padding-top: 14px; margin-top: 14px; display: flex; justify-content: space-between; font-size: 18px; font-weight: 700;">
+              <span>Итого:</span>
+              <span id="price-total" style="color: var(--orange);"><?= number_format($basePrice + 300 + $serviceFee, 0, '', ' ') ?> ₽</span>
             </div>
 
             <!-- Форма отправки в корзину -->
-            <form method="POST" action="tickets.php?flight_id=<?= $flight['id'] ?>">
+            <form method="POST" action="tickets.php?flight_id=<?= $flight['id'] ?>" style="margin-top: 20px;">
               <input type="hidden" name="action" value="add_to_cart">
+              <input type="hidden" name="flight_id" value="<?= $flight['id'] ?>">
               <input type="hidden" name="seat_number" id="form-seat-number" value="2B">
               <input type="hidden" name="total_price" id="form-total-price" value="<?= $basePrice + 300 ?>">
-              <button type="submit" class="btn-buy" id="btn-buy" style="cursor: pointer; width: 100%;">
+              <button type="submit" class="button button-orange" id="btn-buy" style="cursor: pointer; width: 100%; height: 48px; font-size: 16px; font-weight: 700; border-radius: 8px;">
                 Купить авиабилет
               </button>
             </form>
 
             <div style="margin-top: 14px; text-align: center; font-size: 12px; color: #64748b;">
-              Билет будет добавлен в корзину для подтверждения и оплаты
+              Билет будет добавлен в корзину для оформления договора
             </div>
           </section>
         </aside>
@@ -236,44 +256,40 @@ $serviceFee = 150;
   <script>
     const basePrice = <?= $basePrice ?>;
     const serviceFee = <?= $serviceFee ?>;
-    let selectedSeat = '2B';
-    let seatFee = 300;
 
-    const seatButtons = document.querySelectorAll('.seat--free, .seat--selected');
-    const badge = document.getElementById('selected-seat-badge');
-    const lblSeatCode = document.getElementById('lbl-seat-code');
-    const priceSeatEl = document.getElementById('price-seat');
-    const priceTotalEl = document.getElementById('price-total');
-    const formSeat = document.getElementById('form-seat-number');
-    const formPrice = document.getElementById('form-total-price');
+    function selectSeat(seatCode, extra) {
+      const extraPrice = parseInt(extra, 10) || 0;
 
-    seatButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        // Снимаем выбор со всех
-        document.querySelectorAll('.seat--selected').forEach(s => {
-          s.classList.replace('seat--selected', 'seat--free');
-          s.setAttribute('aria-pressed', 'false');
-        });
-
-        // Выбираем нажатое
-        btn.classList.replace('seat--free', 'seat--selected');
-        btn.setAttribute('aria-pressed', 'true');
-        
-        selectedSeat = btn.dataset.seat;
-        seatFee = parseInt(btn.dataset.extra || 0, 10);
-
-        badge.textContent = 'Выбрано место: ' + selectedSeat;
-        lblSeatCode.textContent = selectedSeat;
-        priceSeatEl.textContent = seatFee.toLocaleString('ru-RU') + ' ₽';
-
-        const totalWithSeat = basePrice + seatFee;
-        const grandTotal = totalWithSeat + serviceFee;
-        priceTotalEl.textContent = grandTotal.toLocaleString('ru-RU') + ' ₽';
-
-        formSeat.value = selectedSeat;
-        formPrice.value = totalWithSeat;
+      // Снимаем выбор со всех кресел
+      document.querySelectorAll('.seat').forEach(btn => {
+        if (btn.classList.contains('seat--occupied')) return;
+        if (btn.getAttribute('data-seat') === seatCode) {
+          btn.classList.remove('seat--free');
+          btn.classList.add('seat--selected');
+        } else {
+          btn.classList.remove('seat--selected');
+          btn.classList.add('seat--free');
+        }
       });
-    });
+
+      const badge = document.getElementById('selected-seat-badge');
+      const lblSeat = document.getElementById('lbl-seat-code');
+      const priceSeatEl = document.getElementById('price-seat');
+      const priceTotalEl = document.getElementById('price-total');
+      const formSeat = document.getElementById('form-seat-number');
+      const formPrice = document.getElementById('form-total-price');
+
+      if (badge) badge.textContent = 'Выбрано место: ' + seatCode;
+      if (lblSeat) lblSeat.textContent = seatCode;
+      if (priceSeatEl) priceSeatEl.textContent = extraPrice.toLocaleString('ru-RU') + ' ₽';
+
+      const totalWithSeat = basePrice + extraPrice;
+      const grandTotal = totalWithSeat + serviceFee;
+      if (priceTotalEl) priceTotalEl.textContent = grandTotal.toLocaleString('ru-RU') + ' ₽';
+
+      if (formSeat) formSeat.value = seatCode;
+      if (formPrice) formPrice.value = totalWithSeat;
+    }
   </script>
 </body>
 </html>

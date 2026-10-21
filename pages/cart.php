@@ -95,7 +95,7 @@ $currentUser = getCurrentUser();
               <p style="color: #64748b; font-size: 14px; margin-bottom: 24px;">
                 Найдите интересующие вас рейсы и добавьте их в корзину для оформления билетов.
               </p>
-              <a href="search.php" class="button" style="display: inline-block;">Найти авиабилеты</a>
+              <a href="search.php" class="button" style="display: inline-flex; align-items: center; justify-content: center; text-align: center; text-decoration: none; margin: 0 auto; height: 44px; padding: 0 24px;">Найти авиабилеты</a>
             </div>
           <?php endif; ?>
         </div>

@@ -1,31 +1,28 @@
-# UFAvia — Apache конфигурация для OpenServer / хостинга
+# UFAvia — Apache конфигурация для OpenServer Panel
 AddDefaultCharset UTF-8
 
+# Приоритет индексного файла: index.php всегда первый
 DirectoryIndex index.php index.html
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
-  RewriteBase /
 
-  # Не перенаправлять существующие реальные файлы и папки
-  RewriteCond %{REQUEST_FILENAME} -f [OR]
-  RewriteCond %{REQUEST_FILENAME} -d
-  RewriteCond %{REQUEST_URI} \.(css|js|svg|png|jpg|jpeg|gif|woff|woff2|ttf|ico)$ [NC]
+  # 1. Если запрашивается существующий статический ресурс (css, js, картинки, шрифты) — отдаем напрямую
+  RewriteCond %{REQUEST_URI} \.(css|js|svg|png|jpg|jpeg|gif|woff|woff2|ttf|ico|map|txt|sql)$ [NC]
   RewriteRule ^ - [L]
 
-  # Маршрутизация HTML на PHP страницы
-  RewriteRule ^pages/cart\.html$ pages/cart.php [L,QSA]
-  RewriteRule ^pages/search\.html$ pages/search.php [L,QSA]
-  RewriteRule ^pages/tickets\.html$ pages/tickets.php [L,QSA]
-  RewriteRule ^pages/order\.html$ pages/order.php [L,QSA]
-  RewriteRule ^pages/checkout\.html$ pages/checkout.php [L,QSA]
-  RewriteRule ^pages/profile\.html$ pages/profile.php [L,QSA]
+  # 2. Автоматический редирект с любых *.html запросов на *.php
+  RewriteRule ^pages/(.*)\.html$ pages/$1.php [R=301,L,QSA]
+  RewriteRule ^(.*)\.html$ $1.php [R=301,L,QSA]
 
-  RewriteRule ^cart(\.html)?$ pages/cart.php [L,QSA]
-  RewriteRule ^search(\.html)?$ pages/search.php [L,QSA]
-  RewriteRule ^tickets(\.html)?$ pages/tickets.php [L,QSA]
-  RewriteRule ^order(\.html)?$ pages/order.php [L,QSA]
-  RewriteRule ^checkout(\.html)?$ pages/checkout.php [L,QSA]
-  RewriteRule ^profile(\.html)?$ pages/profile.php [L,QSA]
-  RewriteRule ^admin(\.html)?$ pages/admin.php [L,QSA]
+  # 3. Маршруты без расширения
+  RewriteRule ^cart/?$ pages/cart.php [L,QSA]
+  RewriteRule ^search/?$ pages/search.php [L,QSA]
+  RewriteRule ^tickets/?$ pages/tickets.php [L,QSA]
+  RewriteRule ^order/?$ pages/order.php [L,QSA]
+  RewriteRule ^checkout/?$ pages/checkout.php [L,QSA]
+  RewriteRule ^profile/?$ pages/profile.php [L,QSA]
+  RewriteRule ^admin/?$ pages/admin.php [L,QSA]
+  RewriteRule ^login/?$ pages/login.php [L,QSA]
+  RewriteRule ^logout/?$ pages/logout.php [L,QSA]
 </IfModule>

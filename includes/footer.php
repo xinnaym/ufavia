@@ -49,7 +49,7 @@ $basePath = $isPagesDir ? '../' : './';
   <div class="container copyright">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
       <span>© 2026 UFAvia. Все права защищены. Практическая работа № 1.</span>
-      <span style="color: #64748b; font-size: 13px;">Поддержка PHP 7.2+ | SQLite3</span>
+      <span style="color: #64748b; font-size: 13px;">Поддержка PHP 7.2+ | MySQL 5.7</span>
     </div>
   </div>
 </footer>
